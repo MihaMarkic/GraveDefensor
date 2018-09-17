@@ -9,6 +9,28 @@
     <Import_RootNamespace>GraveDefensor.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Actions\ColorTransitionAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\MovementPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\BattleScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Drawable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyWave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\GraveDefensorMaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\GroundEnemy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Master.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\ScrollableScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\WeaponPlace.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GraveDefensorGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IAudioManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IDrawContext`1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IInitContentContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IInitContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\DrawContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\InitContentContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\InitContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\UpdateContext.cs" />
   </ItemGroup>
 </Project>

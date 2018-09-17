@@ -63,12 +63,20 @@
     </MonoGameContentReference>
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraveDefensor.Engine\GraveDefensor.Engine.csproj">
       <Project>{8133e054-c2e9-40a7-8ecd-b13d0558a118}</Project>
       <Name>GraveDefensor.Engine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NLog">
+      <Version>4.5.9</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\GraveDefensor.Shared\GraveDefensor.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

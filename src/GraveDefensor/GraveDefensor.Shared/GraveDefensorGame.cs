@@ -1,4 +1,7 @@
 ﻿using GraveDefensor.Engine.Core;
+using GraveDefensor.Shared.Core;
+using GraveDefensor.Shared.Drawable;
+using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,6 +18,9 @@ namespace GraveDefensor.Shared
         SpriteBatch spriteBatch;
         Vector2 mousePosition;
         Texture2D mouseTexture;
+        readonly InitContentContext initContext;
+        DrawContext drawContext;
+        GraveDefensorMaster master;
 
         public GraveDefensorGame()
         {
@@ -26,6 +32,7 @@ namespace GraveDefensor.Shared
                 IsFullScreen = ScreenInfo.Default.IsFullScreen
             };
             Content.RootDirectory = "Content";
+            initContext = new InitContentContext(Content, Globals.ObjectPool);
         }
 
         /// <summary>
@@ -43,6 +50,9 @@ namespace GraveDefensor.Shared
                     graphics.GraphicsDevice.Viewport.Width / 2,
                     graphics.GraphicsDevice.Viewport.Height / 2);
             }
+            master = new GraveDefensorMaster();
+            // settings is null just for the time being
+            master.Init(new InitContext(Globals.ObjectPool), settings: null); 
             base.Initialize();
         }
 
@@ -54,10 +64,13 @@ namespace GraveDefensor.Shared
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Primitives2D.CreateThePixel(GraphicsDevice);
+            drawContext = new DrawContext(spriteBatch);
             if (ScreenInfo.Default.HasMouse)
             {
                 mouseTexture = Content.Load<Texture2D>("cross");
             }
+            master.InitContent(initContext);
         }
 
         /// <summary>
@@ -70,6 +83,7 @@ namespace GraveDefensor.Shared
             {
                 mouseTexture.Dispose();
             }
+            Primitives2D.Unload();
         }
 
         /// <summary>
@@ -79,8 +93,8 @@ namespace GraveDefensor.Shared
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //    Exit();
 
             if (ScreenInfo.Default.HasMouse)
             {
@@ -92,8 +106,12 @@ namespace GraveDefensor.Shared
                     mousePosition.X = state.X;
                     mousePosition.Y = state.Y;
                 }
+                master.Update(new UpdateContext(gameTime,  new Vector2(state.X, state.Y), Globals.ObjectPool));
             }
-
+            else
+            {
+                master.Update(new UpdateContext(gameTime, null, Globals.ObjectPool));
+            }
             base.Update(gameTime);
         }
 
@@ -106,6 +124,7 @@ namespace GraveDefensor.Shared
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
+            master.Draw(drawContext);
             if (ScreenInfo.Default.HasMouse)
             {
                 spriteBatch.Draw(mouseTexture, mousePosition, Color.White);
