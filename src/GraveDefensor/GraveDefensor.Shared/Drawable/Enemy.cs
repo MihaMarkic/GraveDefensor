@@ -7,7 +7,7 @@ using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public abstract class Enemy: Drawable
+    public class Enemy: Drawable
     {
         Texture2D texture;
         public Vector2 Center { get; private set; }

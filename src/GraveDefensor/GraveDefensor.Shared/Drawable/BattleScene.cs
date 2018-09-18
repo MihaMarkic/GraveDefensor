@@ -1,32 +1,36 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
-using Settings = GraveDefensor.Engine.Settings;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Drawable
 {
     public class BattleScene: ScrollableScene
     {
-        WeaponPlace[] weaponPlaces;
-        EnemyWave[] waves;
+        public WeaponPlace[] WeaponPlaces { get; private set; }
+        public EnemyWave[] Waves { get; private set; }
         Settings.Battle settings;
-        public void Init(IInitContext context, Settings.Battle settings)
+        public int Health { get; private set; }
+        public int Cash { get; private set; }
+        Settings.Size windowSize;
+        public void Init(IInitContext context, Settings.Battle settings, Settings.Size windowSize)
         {
             this.settings = settings;
-            
-            weaponPlaces = new WeaponPlace[settings.WeaponPlaces.Length];
+            this.windowSize = windowSize;
+            Health = settings.Health;
+            Cash = settings.Cash;
+            WeaponPlaces = new WeaponPlace[settings.WeaponPlaces.Length];
             for (int i = 0; i < settings.WeaponPlaces.Length; i++)
             {
                 var setting = settings.WeaponPlaces[i];
                 var wp = context.ObjectPool.GetObject<WeaponPlace>();
                 wp.Init(setting);
-                weaponPlaces[i] = wp;
+                WeaponPlaces[i] = wp;
             }
-            waves = new EnemyWave[settings.Waves.Length];
+            Waves = new EnemyWave[settings.Waves.Length];
             for (int i=0; i<settings.Waves.Length; i++)
             {
                 var setting = settings.Waves[i];
@@ -34,16 +38,16 @@ namespace GraveDefensor.Shared.Drawable
                 var enemySettings = settings.Enemies.Single(e => string.Equals(e.Id, setting.EnemyId, StringComparison.Ordinal));
                 var pathSettings = settings.Paths.Single(p => string.Equals(p.Id, setting.PathId, StringComparison.Ordinal));
                 wave.Init(context, setting, enemySettings, pathSettings);
-                waves[i] = wave;
+                Waves[i] = wave;
             }
         }
         public override void InitContent(IInitContentContext context)
         {
-            foreach (var wp in weaponPlaces)
+            foreach (var wp in WeaponPlaces)
             {
                 wp.InitContent(context);
             }
-            foreach (var wave in waves)
+            foreach (var wave in Waves)
             {
                 wave.InitContent(context);
             }
@@ -54,11 +58,11 @@ namespace GraveDefensor.Shared.Drawable
         {
             // converts mouse coordinates to absolute to scene
             var childContext = OffsetUpdateContext(context);
-            foreach (var wp in weaponPlaces)
+            foreach (var wp in WeaponPlaces)
             {
                 wp.Update(context);
             }
-            foreach (var wave in waves)
+            foreach (var wave in Waves)
             {
                 wave.Update(context);
             }
@@ -67,11 +71,11 @@ namespace GraveDefensor.Shared.Drawable
 
         public override void Draw(IDrawContext context)
         {
-            foreach (var wp in weaponPlaces)
+            foreach (var wp in WeaponPlaces)
             {
                 wp.Draw(context);
             }
-            foreach (var wave in waves)
+            foreach (var wave in Waves)
             {
                 wave.Draw(context);
             }
@@ -82,7 +86,21 @@ namespace GraveDefensor.Shared.Drawable
                     DrawPath(context, path);
                 }
             }
+            DrawHeader(context);
             base.Draw(context);
+        }
+        void DrawHeader(IDrawContext context)
+        {
+            const float BetweenColumns = 80;
+            const float BetweenRows = 20;
+            const float Top = 10;
+            const float Left = 10;
+            context.FillRectangle(new Rectangle(0, 0, windowSize.Width, 60), new Color(Color.Black, 0.2f));
+            context.DrawString(GlobalContent.Default.HudFont, "Health", new Vector2(Left, Top), Color.Yellow);
+            context.DrawString(GlobalContent.Default.HudFont, Health.ToString("#,##0"), new Vector2(Left, Top+BetweenRows), Color.Yellow);
+            context.DrawString(GlobalContent.Default.HudFont, "Amount", new Vector2(Left+BetweenColumns, Top), Color.Yellow);
+            context.DrawString(GlobalContent.Default.HudFont, Cash.ToString("#,##0"), new Vector2(Left + BetweenColumns, Top+BetweenRows), Color.Yellow);
+
         }
         void DrawPath(IDrawContext context, Settings.Path path)
         {
@@ -96,7 +114,7 @@ namespace GraveDefensor.Shared.Drawable
 
         public override void ReleaseResources(IObjectPool objectPool)
         {
-            objectPool.ReleaseObject(weaponPlaces);
+            objectPool.ReleaseObject(WeaponPlaces);
             base.ReleaseResources(objectPool);
         }
     }

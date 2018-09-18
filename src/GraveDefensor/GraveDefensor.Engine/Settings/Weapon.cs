@@ -1,16 +1,16 @@
 ﻿namespace GraveDefensor.Engine.Settings
 {
-    public abstract class Weapon
+    public class Weapon
     {
-        public int Range { get; set; }
+        public string Name { get; set; }
+        public int FiringRange { get; set; }
+        public int TrackingRange { get; set; }
         /// <summary>
-        /// Expressed in milliseconds.
+        /// Rounds per second
         /// </summary>
-        public int ReloadTime { get; set; }
-    }
-
-    public class MachineGun: Weapon
-    {
-
+        public int Speed { get; set; }
+        public int Power { get; set; }
+        public bool AirCapability { get; set; }
+        public bool GroundCapability { get; set; }
     }
 }

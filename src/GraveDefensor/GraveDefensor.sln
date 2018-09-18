@@ -17,6 +17,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GraveDefensor.Shared.Test",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraveDefensor.Windows.Test", "Tests\GraveDefensor.Windows.Test\GraveDefensor.Windows.Test.csproj", "{17E3A066-537B-4280-A205-36C86B67FA8F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C97A671A-79CF-4CED-B554-9EE1C2D43AA1}"
+	ProjectSection(SolutionItems) = preProject
+		original.md = original.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		GraveDefensor.Shared\GraveDefensor.Shared.projitems*{17e3a066-537b-4280-a205-36c86b67fa8f}*SharedItemsImports = 4

@@ -49,3 +49,10 @@
 /processorParam:TextureFormat=Color
 /build:Enemies/Walker.png
 
+#begin Fonts/Hud.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Hud.spritefont
+

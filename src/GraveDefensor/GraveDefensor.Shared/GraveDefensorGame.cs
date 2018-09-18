@@ -52,7 +52,11 @@ namespace GraveDefensor.Shared
             }
             master = new GraveDefensorMaster();
             // settings is null just for the time being
-            master.Init(new InitContext(Globals.ObjectPool), settings: null); 
+            var windowSize = new Engine.Settings.Size {
+                Width = graphics.GraphicsDevice.Viewport.Width,
+                Height = graphics.GraphicsDevice.Viewport.Height
+            };
+            master.Init(new InitContext(Globals.ObjectPool), settings: null, windowSize); 
             base.Initialize();
         }
 
@@ -70,6 +74,7 @@ namespace GraveDefensor.Shared
             {
                 mouseTexture = Content.Load<Texture2D>("cross");
             }
+            GlobalContent.Init(initContext);
             master.InitContent(initContext);
         }
 
@@ -84,6 +89,7 @@ namespace GraveDefensor.Shared
                 mouseTexture.Dispose();
             }
             Primitives2D.Unload();
+            GlobalContent.Unload();
         }
 
         /// <summary>

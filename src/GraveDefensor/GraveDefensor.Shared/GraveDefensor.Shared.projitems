@@ -16,8 +16,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Drawable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyWave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\GlobalContent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\GraveDefensorMaster.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drawable\GroundEnemy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Master.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\ScrollableScene.cs" />

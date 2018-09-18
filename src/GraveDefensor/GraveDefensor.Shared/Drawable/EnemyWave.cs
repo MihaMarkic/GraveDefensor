@@ -25,18 +25,8 @@ namespace GraveDefensor.Shared.Drawable
             this.path = path;
             this.enemySettings = enemySettings;
             enemies = context.ObjectPool.GetObject<List<Enemy>>();
-            enemyTemplate = GetEnemyTemplate(context.ObjectPool, enemySettings);
+            enemyTemplate = context.ObjectPool.GetObject<Enemy>();
             logger.Info($"Wave {settings.Id} init");
-        }
-        public static Enemy GetEnemyTemplate(IObjectPool pool, Settings.Enemy enemySettings)
-        {
-            switch(enemySettings)
-            {
-                case Settings.GroundEnemy _:
-                    return pool.GetObject<GroundEnemy>();
-                default:
-                    throw new ArgumentException($"Unknown enemy id {enemySettings.GetType().Name}");
-            }
         }
         public override void InitContent(IInitContentContext context)
         {
@@ -95,7 +85,7 @@ namespace GraveDefensor.Shared.Drawable
         }
         public void SpawnEnemy(UpdateContext context)
         {
-            var enemy = GetEnemyTemplate(context.ObjectPool, enemySettings);
+            var enemy = context.ObjectPool.GetObject<Enemy>();
             enemy.Init(null, enemySettings, path);
             enemy.CopyContentFrom(enemyTemplate);
             enemy.Start();
