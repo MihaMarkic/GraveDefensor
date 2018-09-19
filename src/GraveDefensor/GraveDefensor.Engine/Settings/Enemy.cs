@@ -1,8 +1,8 @@
 ﻿namespace GraveDefensor.Engine.Settings
 {
-    public class Enemy
+    public abstract class Enemy
     {
-        public string Id { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// Expressed in pixels per second
         /// </summary>

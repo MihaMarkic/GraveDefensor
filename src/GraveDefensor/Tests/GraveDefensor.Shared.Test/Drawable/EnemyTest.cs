@@ -1,10 +1,11 @@
-﻿using GraveDefensor.Shared.Drawable;
+﻿using GraveDefensor.Shared.Drawable.Enemies;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
 using NSubstitute;
 using NUnit.Framework;
 using System;
+using System.Diagnostics;
 using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Test.Drawable
@@ -16,12 +17,12 @@ namespace GraveDefensor.Shared.Test.Drawable
         public class Init: EnemyTest
         {
             [Test]
-            public void AfterInitIsActiveIsFalse()
+            public void AfterInit_StatusIsReady()
             {
                 Target.Init(Substitute.For<IInitContext>(),
                 new MockEnemySettings
                 {
-                    Id = "Enemy",
+                    Name = "Enemy",
                     Speed = 40
                 },
                 new Settings.Path
@@ -33,7 +34,7 @@ namespace GraveDefensor.Shared.Test.Drawable
                     }
                 });
 
-                Assert.That(Target.IsActive, Is.False);
+                Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Ready));
             }
         }
         [TestFixture]
@@ -45,7 +46,7 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Target.Init(Substitute.For<IInitContext>(),
                     new MockEnemySettings
                     {
-                        Id = "Enemy",
+                        Name = "Enemy",
                         Speed = 40
                     },
                     new Settings.Path
@@ -61,11 +62,11 @@ namespace GraveDefensor.Shared.Test.Drawable
                 base.SetUp();
             }
             [Test]
-            public void AfterStart_ActiveIsTrue()
+            public void AfterStart_StatusIsWalking()
             {
                 Target.Start();
-                
-                Assert.That(Target.IsActive, Is.True);
+
+                Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Walking));
             }
             [Test]
             public void AfterStart_LastPointIsZero()
@@ -98,21 +99,22 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Target.Init(Substitute.For<IInitContext>(),
                     new MockEnemySettings
                     {
-                        Id = "Enemy",
+                        Name = "Enemy",
                         Speed = 1000
                     },
                     new Settings.Path
                     {
                         Points = new Settings.Point[]
                         {
-                            new Settings.Point { X = 0, Y = 0},
-                            new Settings.Point { X = 100, Y = 0},
-                            new Settings.Point { X = 110, Y = 10},
-                            new Settings.Point { X = 110, Y = 40}
+                            new Settings.Point { X = 0, Y = 0},     
+                            new Settings.Point { X = 100, Y = 0},   // length is 100
+                            new Settings.Point { X = 110, Y = 10},  // length is Sqrt(200)
+                            new Settings.Point { X = 110, Y = 40}   // length is 30
                         }
                     });
                 base.SetUp();
             }
+            [DebuggerStepThrough]
             public static UpdateContext CreateUpdateContext(int elapsed)
             {
                 return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, null);
@@ -156,6 +158,18 @@ namespace GraveDefensor.Shared.Test.Drawable
                 float pos = 10 / (float)Math.Sqrt(200);
 
                 Assert.That(Target.Angle, Is.EqualTo((float)(Math.PI / 4)));
+            }
+            [Test]
+            public void WhenDoneLastSegment_StateIsFinished()
+            {
+                Target.Start();
+                Target.Update(CreateUpdateContext(50));
+                Target.Update(CreateUpdateContext((int)(50 + Math.Sqrt(200)/2)));
+                Target.Update(CreateUpdateContext((int)(Math.Sqrt(200) / 2 + 15)));
+
+                Target.Update(CreateUpdateContext(20));
+
+                Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Finished));
             }
         }
     }

@@ -3,5 +3,6 @@
     public class Master
     {
         public Battle[] Battles { get; set; }
+        public Enemies Enemies { get; set; }
     }
 }

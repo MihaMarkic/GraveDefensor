@@ -1,7 +1,9 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
+using GraveDefensor.Shared.Messages;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
+using Righthand.MessageBus;
 using System;
 using System.Linq;
 using Settings = GraveDefensor.Engine.Settings;
@@ -14,14 +16,15 @@ namespace GraveDefensor.Shared.Drawable
         public EnemyWave[] Waves { get; private set; }
         Settings.Battle settings;
         public int Health { get; private set; }
-        public int Cash { get; private set; }
+        public int Amount { get; private set; }
         Settings.Size windowSize;
-        public void Init(IInitContext context, Settings.Battle settings, Settings.Size windowSize)
+        Subscription changeStatusSubscription;
+        public void Init(IInitContext context, Settings.Battle settings, Settings.Enemies enemiesSettings, Settings.Size windowSize)
         {
             this.settings = settings;
             this.windowSize = windowSize;
             Health = settings.Health;
-            Cash = settings.Cash;
+            Amount = settings.Amount;
             WeaponPlaces = new WeaponPlace[settings.WeaponPlaces.Length];
             for (int i = 0; i < settings.WeaponPlaces.Length; i++)
             {
@@ -35,11 +38,17 @@ namespace GraveDefensor.Shared.Drawable
             {
                 var setting = settings.Waves[i];
                 var wave = context.ObjectPool.GetObject<EnemyWave>();
-                var enemySettings = settings.Enemies.Single(e => string.Equals(e.Id, setting.EnemyId, StringComparison.Ordinal));
+                var enemySettings = enemiesSettings.GetEnemyById(setting.EnemyId);
                 var pathSettings = settings.Paths.Single(p => string.Equals(p.Id, setting.PathId, StringComparison.Ordinal));
                 wave.Init(context, setting, enemySettings, pathSettings);
                 Waves[i] = wave;
             }
+            changeStatusSubscription = context.Dispatcher.Subscribe<ChangeStatusMessage>(OnChangeStatus);
+        }
+        internal void OnChangeStatus(object key, ChangeStatusMessage message)
+        {
+            Health += message.Health;
+            Amount += message.Amount;
         }
         public override void InitContent(IInitContentContext context)
         {
@@ -99,7 +108,7 @@ namespace GraveDefensor.Shared.Drawable
             context.DrawString(GlobalContent.Default.HudFont, "Health", new Vector2(Left, Top), Color.Yellow);
             context.DrawString(GlobalContent.Default.HudFont, Health.ToString("#,##0"), new Vector2(Left, Top+BetweenRows), Color.Yellow);
             context.DrawString(GlobalContent.Default.HudFont, "Amount", new Vector2(Left+BetweenColumns, Top), Color.Yellow);
-            context.DrawString(GlobalContent.Default.HudFont, Cash.ToString("#,##0"), new Vector2(Left + BetweenColumns, Top+BetweenRows), Color.Yellow);
+            context.DrawString(GlobalContent.Default.HudFont, Amount.ToString("#,##0"), new Vector2(Left + BetweenColumns, Top+BetweenRows), Color.Yellow);
 
         }
         void DrawPath(IDrawContext context, Settings.Path path)
@@ -115,6 +124,7 @@ namespace GraveDefensor.Shared.Drawable
         public override void ReleaseResources(IObjectPool objectPool)
         {
             objectPool.ReleaseObject(WeaponPlaces);
+            changeStatusSubscription.Dispose();
             base.ReleaseResources(objectPool);
         }
     }

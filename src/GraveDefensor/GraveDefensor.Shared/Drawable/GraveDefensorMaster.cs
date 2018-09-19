@@ -10,7 +10,8 @@ namespace GraveDefensor.Shared.Drawable
         {
             this.windowSize = windowSize;
             var scene = context.ObjectPool.GetObject<BattleScene>();
-            scene.Init(context, CreateTestSettings(), windowSize);
+            var master = CreateTestMaster();
+            scene.Init(context, master.Battles[0], master.Enemies, windowSize);
             CurrentScene = scene;
         }
         public override void InitContent(IInitContentContext context)
@@ -19,12 +20,27 @@ namespace GraveDefensor.Shared.Drawable
             base.InitContent(context);
         }
 
-        Settings.Battle CreateTestSettings()
+        Settings.Master CreateTestMaster()
+        {
+            return new Settings.Master
+            {
+                Enemies = new Settings.Enemies
+                {
+                    CreepyWorm = new Settings.CreepyWorm { Name = "Creepy Worm", Speed = 40, Health = 120, Award = 25 },
+                    Skeleton = new Settings.Skeleton { Name = "Skeleton", Speed = 15, Health = 180, Award = 30 }
+                },
+                Battles = new Settings.Battle[]
+                {
+                    CreateTestBattle()
+                }
+            };
+        }
+        Settings.Battle CreateTestBattle()
         {
             return new Settings.Battle
             {
                 Health = 500,
-                Cash = 200,
+                Amount = 200,
                 WeaponPlaces = new[] {
                     new Settings.WeaponPlace
                     {
@@ -53,18 +69,13 @@ namespace GraveDefensor.Shared.Drawable
                         }
                     }
                 },
-                Enemies = new Settings.Enemy[]
-                {
-                    new Settings.Enemy { Id = "Creepy Worm", Speed = 40, Health = 120, Award = 25 },
-                    new Settings.Enemy { Id = "Skeleton", Speed = 15, Health = 180, Award = 30 }
-                },
                 Waves = new Settings.EnemyWave[]
                 {
                     new Settings.EnemyWave
                     {
                         Id = "First",
                         PathId = "Core",
-                        EnemyId = "Creepy Worm",
+                        EnemyId = "CreepyWorm",
                         StartTimeOffset = 500,
                         Interval = 50,
                         EnemiesCount = 10

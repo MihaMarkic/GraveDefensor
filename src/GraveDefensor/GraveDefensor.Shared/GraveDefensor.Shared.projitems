@@ -14,7 +14,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\MovementPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\BattleScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Drawable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\CreepWorm.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\Enemy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\EnemyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\Skeleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyWave.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\GlobalContent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\GraveDefensorMaster.cs" />
@@ -24,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\WeaponPlace.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GraveDefensorGame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messages\ChangeStatusMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IAudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IDrawContext`1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Abstract\IInitContentContext.cs" />
