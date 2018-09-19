@@ -17,10 +17,13 @@ namespace GraveDefensor.Shared.Drawable
         Settings.Path path;
         Settings.Enemy enemySettings;
         List<Enemy> enemies;
+        List<Enemy> completedEnemies;
         Enemy enemyTemplate;
-        TimeSpan? relative;
-        TimeSpan relativeSpawnTime;
-        public bool IsActive { get; set; }
+        internal TimeSpan Relative { get; private set; }
+        internal TimeSpan RelativeSpawnTime { get; private set; }
+        public IReadOnlyList<Enemy> Enemies => enemies;
+        public IReadOnlyList<Enemy> CompletedEnemies => completedEnemies;
+        public EnemyWaveStatus Status { get; private set; }
         public void Init(IInitContext context, Settings.EnemyWave settings, Settings.Enemy enemySettings, Settings.Path path)
         {
             initContext = context;
@@ -28,8 +31,11 @@ namespace GraveDefensor.Shared.Drawable
             this.path = path;
             this.enemySettings = enemySettings;
             enemies = context.ObjectPool.GetObject<List<Enemy>>();
+            completedEnemies = context.ObjectPool.GetObject<List<Enemy>>();
             enemyTemplate = EnemyFactory.GetEnemyFromPool(context.ObjectPool, enemySettings);
             logger.Info($"Wave {settings.Id} init");
+            Relative = TimeSpan.FromMilliseconds(settings.StartTimeOffset);
+            Status = EnemyWaveStatus.Ready;
         }
         public override void InitContent(IInitContentContext context)
         {
@@ -38,51 +44,76 @@ namespace GraveDefensor.Shared.Drawable
         }
         public override void Update(UpdateContext context)
         {
-            if (!IsActive)
+            switch (Status)
             {
-                if (!relative.HasValue)
-                {
-                    relative = TimeSpan.Zero;
-                }
-                else
-                {
-                    relative += context.GameTime.ElapsedGameTime;
-                    if (relative.Value.TotalMilliseconds > settings.StartTimeOffset)
+                case EnemyWaveStatus.Ready:
+                    Relative -= context.GameTime.ElapsedGameTime;
+                    if (Relative < TimeSpan.Zero)
                     {
-                        relativeSpawnTime = TimeSpan.Zero;
-                        SpawnEnemy(context);
-                        IsActive = true;
-                        logger.Info($"Wave {settings.Id} become active");
-                        return;
+                        TransitionToSpawning(context);
                     }
-                } 
+                    break;
+                case EnemyWaveStatus.Spawning:
+                    if (enemies.Count + completedEnemies.Count == settings.EnemiesCount)
+                    {
+                        TransitionToWaitingForFinish();
+                    }
+                    else
+                    {
+                        RelativeSpawnTime -= context.GameTime.ElapsedGameTime;
+                        double milliseconds = RelativeSpawnTime.TotalMilliseconds;
+                        if (milliseconds < 0)
+                        {
+                            RelativeSpawnTime = TimeSpan.FromMilliseconds(settings.Interval + milliseconds);
+                            SpawnEnemy(context);
+                        }
+                    }
+                    break;
+                case EnemyWaveStatus.WaitingForFinish:
+                    if (enemies.Count == 0)
+                    {
+                        TransitionToDone();
+                    }
+                    break;
             }
-            else
-            {
-
-            }
-            if (IsActive)
-            {
-                //relativeSpawnTime
-                //if (relativeSpawnTime.TotalMilliseconds > settings.Interval)
-                //{
-                //    relativeSpawnTime = relativeSpawnTime.TotalMilliseconds + settings.Interval
-                //}
-            }
-            foreach (var enemy in enemies)
-            {
-                enemy.Update(context);
-            }
+            UpdateEnemies(context);
             base.Update(context);
+        }
+
+        internal void UpdateEnemies(UpdateContext context)
+        {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                var enemy = enemies[i];
+                enemy.Update(context);
+                if (enemy.IsDone)
+                {
+                    enemies.RemoveAt(i);
+                    completedEnemies.Add(enemy);
+                }
+            }
+        }
+
+        internal void TransitionToSpawning(UpdateContext context)
+        {
+            RelativeSpawnTime = TimeSpan.FromMilliseconds(settings.Interval) + Relative;
+            SpawnEnemy(context);
+            Status = EnemyWaveStatus.Spawning;
+            logger.Info($"Wave {settings.Id} become active");
+        }
+        internal void TransitionToWaitingForFinish()
+        {
+            Status = EnemyWaveStatus.WaitingForFinish;
+        }
+        internal void TransitionToDone()
+        {
+            Status = EnemyWaveStatus.Done;
         }
         public override void Draw(IDrawContext context)
         {
-            if (IsActive)
+            foreach (var enemy in enemies)
             {
-                foreach (var enemy in enemies)
-                {
-                    enemy.Draw(context);
-                }
+                enemy.Draw(context);
             }
             base.Draw(context);
         }
@@ -98,8 +129,17 @@ namespace GraveDefensor.Shared.Drawable
         public override void ReleaseResources(IObjectPool objectPool)
         {
             objectPool.ReleaseObject(enemies);
+            objectPool.ReleaseObject(completedEnemies);
             objectPool.ReleaseObject(enemyTemplate);
             base.ReleaseResources(objectPool);
         }
+    }
+
+    public enum EnemyWaveStatus
+    {
+        Ready,
+        Spawning,
+        WaitingForFinish,
+        Done
     }
 }

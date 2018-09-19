@@ -30,6 +30,14 @@ namespace GraveDefensor.Engine.Test.Services.Implementation
 
                 Assert.That(item.Index, Is.EqualTo(1));
             }
+            [Test]
+            public void SecondCallOnSameType_ShouldReturnNewInstance()
+            {
+                var first = Target.GetObject<Item>();
+                var second = Target.GetObject<Item>();
+
+                Assert.That(first, Is.Not.SameAs(second));
+            }
         }
     }
 

@@ -11,6 +11,7 @@ namespace GraveDefensor.Shared.Drawable.Enemies
 {
     public abstract class Enemy: Drawable
     {
+        public static TimeSpan VisibleBeforeDone { get; } = TimeSpan.FromSeconds(1);
         Texture2D texture;
         public Vector2 Center { get; private set; }
         public Vector2 OffsetToCenter { get; private set; }

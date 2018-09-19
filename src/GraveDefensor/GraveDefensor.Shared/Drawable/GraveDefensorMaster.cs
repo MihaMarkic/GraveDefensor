@@ -77,7 +77,7 @@ namespace GraveDefensor.Shared.Drawable
                         PathId = "Core",
                         EnemyId = "CreepyWorm",
                         StartTimeOffset = 500,
-                        Interval = 50,
+                        Interval = 4000,
                         EnemiesCount = 10
                     }
                 },
