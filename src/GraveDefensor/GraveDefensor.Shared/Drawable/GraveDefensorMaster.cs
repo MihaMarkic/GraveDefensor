@@ -42,12 +42,12 @@ namespace GraveDefensor.Shared.Drawable
                 Health = 500,
                 Amount = 200,
                 WeaponPlaces = new[] {
-                    new Settings.WeaponPlace
+                    new Settings.WeaponPod
                     {
                         Center = new Settings.Point { X = 100, Y = 120},
                         Size = new Settings.Size { Width = 32, Height = 32 }
                     },
-                    new Settings.WeaponPlace
+                    new Settings.WeaponPod
                     {
                         Center = new Settings.Point { X = 200, Y = 170},
                         Size = new Settings.Size { Width = 32, Height = 32 }

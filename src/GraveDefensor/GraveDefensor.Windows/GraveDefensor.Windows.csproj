@@ -77,6 +77,9 @@
     <PackageReference Include="NLog">
       <Version>4.5.10</Version>
     </PackageReference>
+    <PackageReference Include="Righthand.Immutable">
+      <Version>1.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Righthand.MessageBus">
       <Version>1.1.1</Version>
     </PackageReference>

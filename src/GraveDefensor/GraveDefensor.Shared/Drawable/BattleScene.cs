@@ -3,6 +3,7 @@ using GraveDefensor.Shared.Messages;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
+using NLog;
 using Righthand.MessageBus;
 using System;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace GraveDefensor.Shared.Drawable
 {
     public class BattleScene: ScrollableScene
     {
-        public WeaponPlace[] WeaponPlaces { get; private set; }
+        static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+        public WeaponPod[] WeaponPods { get; private set; }
         public EnemyWave[] Waves { get; private set; }
         Settings.Battle settings;
         public int Health { get; private set; }
@@ -25,13 +27,13 @@ namespace GraveDefensor.Shared.Drawable
             this.windowSize = windowSize;
             Health = settings.Health;
             Amount = settings.Amount;
-            WeaponPlaces = new WeaponPlace[settings.WeaponPlaces.Length];
+            WeaponPods = new WeaponPod[settings.WeaponPlaces.Length];
             for (int i = 0; i < settings.WeaponPlaces.Length; i++)
             {
                 var setting = settings.WeaponPlaces[i];
-                var wp = context.ObjectPool.GetObject<WeaponPlace>();
+                var wp = context.ObjectPool.GetObject<WeaponPod>();
                 wp.Init(setting);
-                WeaponPlaces[i] = wp;
+                WeaponPods[i] = wp;
             }
             Waves = new EnemyWave[settings.Waves.Length];
             for (int i=0; i<settings.Waves.Length; i++)
@@ -52,7 +54,7 @@ namespace GraveDefensor.Shared.Drawable
         }
         public override void InitContent(IInitContentContext context)
         {
-            foreach (var wp in WeaponPlaces)
+            foreach (var wp in WeaponPods)
             {
                 wp.InitContent(context);
             }
@@ -62,14 +64,18 @@ namespace GraveDefensor.Shared.Drawable
             }
             base.InitContent(context);
         }
-
+        
         public override void Update(UpdateContext context)
         {
             // converts mouse coordinates to absolute to scene
             var childContext = OffsetUpdateContext(context);
-            foreach (var wp in WeaponPlaces)
+            foreach (var wp in WeaponPods)
             {
                 wp.Update(context);
+                if (wp.ClickState == ClickState.Clicked)
+                {
+                    logger.Info($"Weapon pod {Array.IndexOf(WeaponPods, wp)} was clicked");
+                }
             }
             foreach (var wave in Waves)
             {
@@ -80,7 +86,7 @@ namespace GraveDefensor.Shared.Drawable
 
         public override void Draw(IDrawContext context)
         {
-            foreach (var wp in WeaponPlaces)
+            foreach (var wp in WeaponPods)
             {
                 wp.Draw(context);
             }
@@ -123,7 +129,7 @@ namespace GraveDefensor.Shared.Drawable
 
         public override void ReleaseResources(IObjectPool objectPool)
         {
-            objectPool.ReleaseObject(WeaponPlaces);
+            objectPool.ReleaseObject(WeaponPods);
             changeStatusSubscription.Dispose();
             base.ReleaseResources(objectPool);
         }

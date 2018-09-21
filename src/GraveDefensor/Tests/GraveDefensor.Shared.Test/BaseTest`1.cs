@@ -17,7 +17,7 @@ namespace GraveDefensor.Shared.Test
             {
                 if (target is null)
                 {
-                    target = fixture.Create<T>();
+                    target = fixture.Build<T>().OmitAutoProperties().Create();
                 }
                 return target;
             }

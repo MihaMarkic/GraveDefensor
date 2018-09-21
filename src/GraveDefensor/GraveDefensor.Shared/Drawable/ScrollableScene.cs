@@ -1,4 +1,5 @@
 ﻿using GraveDefensor.Shared.Services.Implementation;
+using Microsoft.Xna.Framework.Input;
 
 namespace GraveDefensor.Shared.Drawable
 {
@@ -10,7 +11,7 @@ namespace GraveDefensor.Shared.Drawable
         public int Offset { get; private set; }
         public UpdateContext OffsetUpdateContext(UpdateContext context)
         {
-            return context.MousePosition.HasValue ? context.CreateHorizontalOffset(Offset) : context;
+            return context.Clone(mouseState: context.MouseState.OffsetHorizontally(Offset));
         }
     }
 }

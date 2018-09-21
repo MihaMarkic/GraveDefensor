@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.5.10" />
+    <PackageReference Include="Righthand.Immutable" Version="1.0.2" />
     <PackageReference Include="Righthand.MessageBus" Version="1.1.1" />
   </ItemGroup>
 

@@ -4,11 +4,12 @@ using GraveDefensor.Shared.Services.Implementation;
 using GraveDefensor.Windows.Actions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public class WeaponPlace: Drawable
+    public class WeaponPod: ClickableDrawable
     {
         Texture2D texture;
         public Vector2 Center { get; private set; }
@@ -17,12 +18,13 @@ namespace GraveDefensor.Shared.Drawable
         public bool IsMouseHovering { get; private set; }
         public ColorTransitionAction MouseHoverColorTransition { get; private set; }
 
-        public void Init(Engine.Settings.WeaponPlace settings)
+        public void Init(Engine.Settings.WeaponPod settings)
         {
             Center = new Vector2(settings.Center.X, settings.Center.Y);
             Bounds = new Rectangle((int)Center.X - settings.Size.Width / 2, 
                 (int)Center.Y - settings.Size.Height / 2, settings.Size.Width, settings.Size.Height);
             Origin = new Vector2(settings.Size.Width / 2, settings.Size.Height / 2);
+            Init();
         }
         public override void InitContent(IInitContentContext context)
         {
@@ -35,11 +37,14 @@ namespace GraveDefensor.Shared.Drawable
             UpdateMouseHover(context);
             base.Update(context);
         }
-
+        public override bool IsClickWithinBoundaries(MouseState state)
+        {
+            return Bounds.Contains(state.AsPoint());
+        }
         private void UpdateMouseHover(UpdateContext context)
         {
             bool wasHovering = IsMouseHovering;
-            IsMouseHovering = Bounds.Contains(context.MousePosition.Value);
+            IsMouseHovering = Bounds.Contains(new Point(context.MouseState.X, context.MouseState.Y));
             if (wasHovering ^ IsMouseHovering)
             {
                 MouseHoverColorTransition.Start(MouseHoverColorTransition.Current, IsMouseHovering ? Color.Red : Color.White, 

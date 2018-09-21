@@ -104,19 +104,19 @@ namespace GraveDefensor.Shared
 
             if (ScreenInfo.Default.HasMouse)
             {
-                MouseState state = Mouse.GetState();
+                MouseState mouseState = Mouse.GetState();
 
-                if (graphics.GraphicsDevice.Viewport.Bounds.Contains(state.X, state.Y))
+                if (graphics.GraphicsDevice.Viewport.Bounds.Contains(mouseState.X, mouseState.Y))
                 {
                     // Update our sprites position to the current cursor location
-                    mousePosition.X = state.X;
-                    mousePosition.Y = state.Y;
+                    mousePosition.X = mouseState.X;
+                    mousePosition.Y = mouseState.Y;
                 }
-                master.Update(new UpdateContext(gameTime,  new Vector2(state.X, state.Y), Globals.ObjectPool));
+                master.Update(new UpdateContext(gameTime,  mouseState, Globals.ObjectPool));
             }
             else
             {
-                master.Update(new UpdateContext(gameTime, null, Globals.ObjectPool));
+                master.Update(new UpdateContext(gameTime, new MouseState(), Globals.ObjectPool));
             }
             base.Update(gameTime);
         }

@@ -1,25 +1,51 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Righthand.Immutable;
 
 namespace GraveDefensor.Shared.Services.Implementation
 {
     public readonly struct UpdateContext
     {
         public GameTime GameTime { get; }
-        /// <summary>
-        /// Mouse position on scene. Important when scene is scrollable.
-        /// </summary>
-        public Vector2? MousePosition { get; }
+        public MouseState MouseState { get; }
         public IObjectPool ObjectPool { get; }
-        public UpdateContext(GameTime gameTime, Vector2? mousePosition, IObjectPool objectPool)
+
+        public UpdateContext(GameTime gameTime, MouseState mouseState, IObjectPool objectPool)
         {
             GameTime = gameTime;
-            MousePosition = mousePosition;
+            MouseState = mouseState;
             ObjectPool = objectPool;
         }
+
+        public UpdateContext Clone(Param<GameTime>? gameTime = null, Param<MouseState>? mouseState = null, Param<IObjectPool>? objectPool = null)
+        {
+            return new UpdateContext(gameTime.HasValue ? gameTime.Value.Value : GameTime,
+				mouseState.HasValue ? mouseState.Value.Value : MouseState,
+				objectPool.HasValue ? objectPool.Value.Value : ObjectPool);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType()) return false;
+            var o = (UpdateContext)obj;
+            return Equals(GameTime, o.GameTime) && Equals(MouseState, o.MouseState) && Equals(ObjectPool, o.ObjectPool);}
+
+        public override int GetHashCode()
+        {
+            unchecked
+			{
+				int hash = base.GetHashCode();
+				hash = hash * 37 + (GameTime != null ? GameTime.GetHashCode() : 0);
+				hash = hash * 37 + MouseState.GetHashCode();
+				hash = hash * 37 + (ObjectPool != null ? ObjectPool.GetHashCode() : 0);
+				return hash;
+			}
+        }
+
         public UpdateContext CreateHorizontalOffset(int offset)
         {
-            return new UpdateContext(GameTime, new Vector2(MousePosition.Value.X + offset, MousePosition.Value.Y), ObjectPool);
+            return Clone(mouseState: MouseState.OffsetHorizontally(offset));
         }
     }
 }

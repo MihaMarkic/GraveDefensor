@@ -4,16 +4,16 @@ using NUnit.Framework;
 
 namespace GraveDefensor.Shared.Test.Drawable
 {
-    public class WeaponPlaceTest: BaseTest<Shared.Drawable.WeaponPlace>
+    public class WeaponPodTest: BaseTest<Shared.Drawable.WeaponPod>
     {
         [TestFixture]
-        public class Init: WeaponPlaceTest
+        public class Init: WeaponPodTest
         {
             [Test]
             public void CalculatesCenterCorrectly()
             {
                 Target.Init(
-                    new WeaponPlace
+                    new WeaponPod
                     {
                         Center = new Engine.Settings.Point {  X = 50, Y = 50 },
                         Size = new Size { Width = 40, Height = 45 }
@@ -25,7 +25,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             public void CalculatesBoundsCorrectly()
             {
                 Target.Init(
-                    new WeaponPlace
+                    new WeaponPod
                     {
                         Center = new Engine.Settings.Point { X = 50, Y = 50 },
                         Size = new Size { Width = 40, Height = 30 }
