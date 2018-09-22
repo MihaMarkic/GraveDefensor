@@ -1,4 +1,5 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
+using GraveDefensor.Shared.Core;
 using GraveDefensor.Shared.Drawable;
 using GraveDefensor.Shared.Drawable.Enemies;
 using GraveDefensor.Shared.Service.Abstract;
@@ -22,6 +23,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             var objectPool = Substitute.For<IObjectPool>();
             objectPool.GetObject<List<Enemy>>().Returns(c => new List<Enemy>());
             objectPool.GetObject<CreepWorm>().Returns(c => new CreepWorm());
+            objectPool.GetObject<Path>().Returns(c => new Path());
             context.ObjectPool.Returns(objectPool);
             return context;
         }
@@ -52,7 +54,7 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Target.Init(GetContext(), new Settings.EnemyWave
                 {
                     EnemyId = nameof(Settings.CreepyWorm)
-                }, new Settings.CreepyWorm(), new Settings.Path());
+                }, new Settings.CreepyWorm(), GetPath());
 
                 Assert.That(Target.Enemies.Count, Is.Zero);
             }
@@ -62,7 +64,7 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Target.Init(GetContext(), new Settings.EnemyWave
                 {
                     EnemyId = nameof(Settings.CreepyWorm)
-                }, new Settings.CreepyWorm(), new Settings.Path());
+                }, new Settings.CreepyWorm(), GetPath());
 
                 Assert.That(Target.CompletedEnemies.Count, Is.Zero);
             }

@@ -1,4 +1,5 @@
-﻿using GraveDefensor.Shared.Messages;
+﻿using GraveDefensor.Shared.Core;
+using GraveDefensor.Shared.Messages;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
@@ -26,18 +27,13 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         public TimeSpan FinishedStatusSpan { get; private set; }
         IDispatcher dispatcher;
         Settings.Enemy settings;
-        Settings.Path path;
-        Vector2[] pathPoints;
-        public void Init(IInitContext context, Settings.Enemy settings, Settings.Path path)
+        public Path Path { get; private set; }
+        
+        public void Init(IInitContext context, Settings.Enemy settings, Path path)
         {
             this.settings = settings;
-            this.path = path;
+            Path = path;
             dispatcher = context.Dispatcher;
-            pathPoints = new Vector2[path.Points.Length];
-            for (int i = 0; i < path.Points.Length; i++)
-            {
-                pathPoints[i] = new Vector2(path.Points[i].X, path.Points[i].Y);
-            }
             Center = Vector2.Zero;
             Status = EnemyStatus.Ready;
             Health = settings.Health;
@@ -51,18 +47,10 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         public void Start()
         {
             LastPoint = 0;
-            SegmentLength = GetSegmentLength(LastPoint, pathPoints);
-            Angle = GetAngleBetweenVectors(pathPoints[0], pathPoints[1]);
+            SegmentLength = Path.SegmentsLengths[LastPoint];
+            Angle = (float)Path.Angles[LastPoint];
             Status = EnemyStatus.Walking;
             FinishedStatusSpan = TimeSpan.FromSeconds(1);
-        }
-        public static double GetSegmentLength(int lastPoint, Vector2[] points)
-        {
-            return Math.Abs(Vector2.Distance(points[lastPoint], points[lastPoint+1]));
-        }
-        public static float GetAngleBetweenVectors(Vector2 first, Vector2 second)
-        {
-            return (float)Math.Atan2(second.Y - first.Y, second.X - first.X);
         }
         public override void Update(UpdateContext context)
         {
@@ -77,12 +65,12 @@ namespace GraveDefensor.Shared.Drawable.Enemies
                     else
                     {
                         // continue to next line segment
-                        if (LastPoint < pathPoints.Length - 2)
+                        if (LastPoint < Path.SegmentsLengths.Length-1)
                         {
                             LastPoint++;
                             Traversed = Traversed + distance - SegmentLength;
-                            SegmentLength = GetSegmentLength(LastPoint, pathPoints);
-                            Angle = GetAngleBetweenVectors(pathPoints[LastPoint], pathPoints[LastPoint + 1]);
+                            SegmentLength = Path.SegmentsLengths[LastPoint];
+                            Angle = (float)Path.Angles[LastPoint];
                         }
                         // finished path
                         else
@@ -90,7 +78,7 @@ namespace GraveDefensor.Shared.Drawable.Enemies
                             TransitionToFinished();
                         }
                     }
-                    Center = Vector2.Lerp(pathPoints[LastPoint], pathPoints[LastPoint + 1], (float)(Traversed / SegmentLength));
+                    Center = Vector2.Lerp(Path.Settings.Points[LastPoint].AsVector2(), Path.Settings.Points[LastPoint + 1].AsVector2(), (float)(Traversed / SegmentLength));
                     break;
                 case EnemyStatus.Finished:
                     FinishedStatusSpan -= context.GameTime.ElapsedGameTime;
@@ -104,7 +92,7 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         }
         internal void TransitionToFinished()
         {
-            Center = pathPoints[pathPoints.Length - 1];
+            Center = Path.LastPoint.AsVector2();
             Status = EnemyStatus.Finished;
             dispatcher.Dispatch(new ChangeStatusMessage(0, -Health));
         }

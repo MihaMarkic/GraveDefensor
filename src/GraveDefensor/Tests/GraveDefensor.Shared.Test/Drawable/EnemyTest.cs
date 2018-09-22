@@ -1,4 +1,5 @@
-﻿using GraveDefensor.Shared.Drawable.Enemies;
+﻿using GraveDefensor.Shared.Core;
+using GraveDefensor.Shared.Drawable.Enemies;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
@@ -19,13 +20,8 @@ namespace GraveDefensor.Shared.Test.Drawable
             [Test]
             public void AfterInit_StatusIsReady()
             {
-                Target.Init(Substitute.For<IInitContext>(),
-                new MockEnemySettings
-                {
-                    Name = "Enemy",
-                    Speed = 40
-                },
-                new Settings.Path
+                var path = new Path();
+                path.Init(new Settings.Path
                 {
                     Points = new Settings.Point[]
                     {
@@ -33,6 +29,13 @@ namespace GraveDefensor.Shared.Test.Drawable
                             new Settings.Point { X = 100, Y = 0},
                     }
                 });
+                Target.Init(Substitute.For<IInitContext>(),
+                new MockEnemySettings
+                {
+                    Name = "Enemy",
+                    Speed = 40
+                }, path
+                );
 
                 Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Ready));
             }
@@ -43,22 +46,23 @@ namespace GraveDefensor.Shared.Test.Drawable
             [SetUp]
             public new void SetUp()
             {
-                Target.Init(Substitute.For<IInitContext>(),
-                    new MockEnemySettings
-                    {
-                        Name = "Enemy",
-                        Speed = 40
-                    },
-                    new Settings.Path
-                    {
-                        Points = new Settings.Point[]
+                var path = new Path();
+                path.Init(new Settings.Path
+                {
+                    Points = new Settings.Point[]
                         {
                             new Settings.Point { X = 0, Y = 0},
                             new Settings.Point { X = 100, Y = 0},
                             new Settings.Point { X = 120, Y = 20},
                             new Settings.Point { X = 120, Y = 50}
                         }
-                    });
+                });
+                Target.Init(Substitute.For<IInitContext>(),
+                    new MockEnemySettings
+                    {
+                        Name = "Enemy",
+                        Speed = 40
+                    }, path);
                 base.SetUp();
             }
             [Test]
@@ -96,22 +100,23 @@ namespace GraveDefensor.Shared.Test.Drawable
             [SetUp]
             public new void SetUp()
             {
+                var path = new Path();
+                path.Init(new Settings.Path
+                {
+                    Points = new Settings.Point[]
+                        {
+                            new Settings.Point { X = 0, Y = 0},
+                            new Settings.Point { X = 100, Y = 0},   // length is 100
+                            new Settings.Point { X = 110, Y = 10},  // length is Sqrt(200)
+                            new Settings.Point { X = 110, Y = 40}   // length is 30
+                        }
+                });
                 Target.Init(Substitute.For<IInitContext>(),
                     new MockEnemySettings
                     {
                         Name = "Enemy",
                         Speed = 1000
-                    },
-                    new Settings.Path
-                    {
-                        Points = new Settings.Point[]
-                        {
-                            new Settings.Point { X = 0, Y = 0},     
-                            new Settings.Point { X = 100, Y = 0},   // length is 100
-                            new Settings.Point { X = 110, Y = 10},  // length is Sqrt(200)
-                            new Settings.Point { X = 110, Y = 40}   // length is 30
-                        }
-                    });
+                    }, path);
                 base.SetUp();
             }
             [DebuggerStepThrough]
