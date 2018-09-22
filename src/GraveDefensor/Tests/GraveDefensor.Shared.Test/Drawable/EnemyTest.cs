@@ -177,6 +177,48 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Finished));
             }
         }
+
+        [TestFixture]
+        public class DistanceToEnd : EnemyTest
+        {
+            [SetUp]
+            public new void SetUp()
+            {
+                var path = new Path();
+                path.Init(new Settings.Path
+                {
+                    Points = new Settings.Point[]
+                    {
+                        new Settings.Point {  X = 0, Y = 0},
+                        new Settings.Point { X = 100, Y = 0 },
+                        new Settings.Point { X = 103, Y = 4 },
+                        new Settings.Point { X = 103, Y = 10 }
+                    }
+                });
+                Target.Init(Substitute.For<IInitContext>(),
+                    new MockEnemySettings
+                    {
+                        Name = "Enemy",
+                        Speed = 1000
+                    }, path);
+                base.SetUp();
+            }
+            [DebuggerStepThrough]
+            public static UpdateContext CreateUpdateContext(int elapsed)
+            {
+                return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, null);
+            }
+            [Test]
+            public void WhenHalfDoneFirstSegment_ReturnsCorrectValue()
+            {
+                Target.Start();
+                Target.Update(CreateUpdateContext(50));
+
+                var actual = Target.DistanceToEnd;
+
+                Assert.That(actual, Is.EqualTo(50 + 5 + 6).Within(0.001));
+            }
+        }
     }
 
     public  class MockEnemy: Enemy

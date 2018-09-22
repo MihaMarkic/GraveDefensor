@@ -45,5 +45,14 @@ namespace GraveDefensor.Shared.Core
         {
             return Math.Atan2(b.Y - a.Y, b.X - a.X);
         }
+        public double CalculateLengthFromSegment(int startSegment)
+        {
+            double length = 0;
+            for (int i = startSegment; i < SegmentsLengths.Length; i++)
+            {
+                length += SegmentsLengths[i];
+            }
+            return length;
+        }
     }
 }

@@ -5,8 +5,21 @@ using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Test.Core
 {
-    public class PathTest
+    public class PathTest: BaseTest<Path>
     {
+        [DebuggerStepThrough]
+        internal static Settings.Point[] GetTestPoints()
+        {
+            return new Settings.Point[] {
+                        new Settings.Point {  X = 0, Y = 0},
+                        new Settings.Point { X = 100, Y = 0 },
+                        new Settings.Point { X = 103, Y = 4 },
+                        new Settings.Point { X = 103, Y = 10 }
+                    };
+        }
+        [DebuggerStepThrough]
+        internal static Settings.Path GetTestPath() => new Settings.Path { Points = GetTestPoints() };
+
         [TestFixture]
         public class DistanceBetweenPoints : PathTest
         {
@@ -23,29 +36,49 @@ namespace GraveDefensor.Shared.Test.Core
         [TestFixture]
         public class CalculateSegmentsLengths : PathTest
         {
-            [DebuggerStepThrough]
-            internal static Settings.Point[] GetTestPath()
-            {
-                return new Settings.Point[] {
-                        new Settings.Point {  X = 0, Y = 0},
-                        new Settings.Point { X = 100, Y = 0 },
-                        new Settings.Point { X = 103, Y = 4 },
-                        new Settings.Point { X = 103, Y = 10 }
-                    };
-            }
             [Test]
             public void CalculatesAllSegments()
             {
-                var actual = Path.CalculateSegmentsLengths(GetTestPath());
+                var actual = Path.CalculateSegmentsLengths(GetTestPoints());
 
                 Assert.That(actual.Length, Is.EqualTo(3));
             }
             [Test]
             public void SegmentsAreCorrectlyCalculated()
             {
-                var actual = Path.CalculateSegmentsLengths(GetTestPath());
+                var actual = Path.CalculateSegmentsLengths(GetTestPoints());
 
                 Assert.That(actual, Is.EqualTo(new double[] { 100, 5, 6 }));
+            }
+        }
+        [TestFixture]
+        public class CalculateLengthFromSegment: PathTest
+        {
+            [SetUp]
+            public new void SetUp()
+            {
+                Target.Init(GetTestPath());
+            }
+            [Test]
+            public void WhenStartingWithZeroSegment_SumsAll()
+            {
+                var actual = Target.CalculateLengthFromSegment(0);
+
+                Assert.That(actual, Is.EqualTo(111));
+            }
+            [Test]
+            public void WhenStartingWithPreLastSegment_SumsAll()
+            {
+                var actual = Target.CalculateLengthFromSegment(1);
+
+                Assert.That(actual, Is.EqualTo(11));
+            }
+            [Test]
+            public void WhenStartingWithLastSegment_ReturnsLast()
+            {
+                var actual = Target.CalculateLengthFromSegment(2);
+
+                Assert.That(actual, Is.EqualTo(6));
             }
         }
     }

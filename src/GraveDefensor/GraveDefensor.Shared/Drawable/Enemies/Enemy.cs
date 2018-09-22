@@ -128,7 +128,6 @@ namespace GraveDefensor.Shared.Drawable.Enemies
                 context.FillRectangle(blackTopLeft, new Vector2(width - healthWidth, height), Color.Black);
             }
         }
-
         public void CopyContentFrom(Enemy enemy)
         {
             texture = enemy.texture;
@@ -136,6 +135,13 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         }
         public bool IsDone => Status == EnemyStatus.Done;
         public bool IsVisible => Status != EnemyStatus.Ready && Status != EnemyStatus.Done;
+        public double DistanceToEnd
+        {
+            get
+            {
+                return Path.SegmentsLengths[LastPoint] - Traversed + Path.CalculateLengthFromSegment(LastPoint+1);
+            }
+        }
     }
 
     public enum EnemyStatus
