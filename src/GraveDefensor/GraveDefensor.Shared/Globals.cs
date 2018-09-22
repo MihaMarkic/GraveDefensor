@@ -9,5 +9,7 @@ namespace GraveDefensor.Shared
         public static IObjectPool ObjectPool { get; } = new ObjectPool();
         public static IDispatcher Dispatcher { get; } = new Dispatcher();
         public static bool ShowPaths { get; set; } = true;
+        public static bool ShowMouseCoordinates { get; set; } = false;
+        public static bool ShowButtonsInfo { get; set; } = true;
     }
 }

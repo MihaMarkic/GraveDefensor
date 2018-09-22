@@ -8,6 +8,6 @@ namespace GraveDefensor.Engine.Settings
         public Path[] Paths { get; set; }
         public WeaponPod[] WeaponPlaces { get; set; }
         public EnemyWave[] Waves { get; set; }
-        public Weapon[] Weapons { get; set; }
+        public string[] WeaponNames { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using NLog;
 using Righthand.MessageBus;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Settings = GraveDefensor.Engine.Settings;
 
@@ -17,13 +18,23 @@ namespace GraveDefensor.Shared.Drawable
         public WeaponPod[] WeaponPods { get; private set; }
         public EnemyWave[] Waves { get; private set; }
         Settings.Battle settings;
+        Settings.Weapon[] weaponsSettings;
         public int Health { get; private set; }
         public int Amount { get; private set; }
+        public Dialog Dialog { get; private set; }
         Settings.Size windowSize;
         Subscription changeStatusSubscription;
-        public void Init(IInitContext context, Settings.Battle settings, Settings.Enemies enemiesSettings, Settings.Size windowSize)
+        /// <summary>
+        /// Is in scrolling mode, when user drags it horizontally
+        /// </summary>
+        public bool IsScrolling { get; private set; }
+        IInitContext initContext;
+        IInitContentContext initContentContext;
+        public void Init(IInitContext context, Settings.Battle settings, Settings.Enemies enemiesSettings, Settings.Weapon[] weaponsSettings, Settings.Size windowSize)
         {
+            initContext = context;
             this.settings = settings;
+            this.weaponsSettings = weaponsSettings;
             this.windowSize = windowSize;
             Health = settings.Health;
             Amount = settings.Amount;
@@ -54,6 +65,7 @@ namespace GraveDefensor.Shared.Drawable
         }
         public override void InitContent(IInitContentContext context)
         {
+            initContentContext = context;
             foreach (var wp in WeaponPods)
             {
                 wp.InitContent(context);
@@ -64,7 +76,10 @@ namespace GraveDefensor.Shared.Drawable
             }
             base.InitContent(context);
         }
-        
+        /// <summary>
+        /// Click on entity is allowed only when not scrolling and dialog is absent
+        /// </summary>
+        internal bool CanEntityClick => !IsScrolling && Dialog == null;
         public override void Update(UpdateContext context)
         {
             // converts mouse coordinates to absolute to scene
@@ -72,18 +87,39 @@ namespace GraveDefensor.Shared.Drawable
             foreach (var wp in WeaponPods)
             {
                 wp.Update(context);
-                if (wp.ClickState == ClickState.Clicked)
+                if (CanEntityClick && wp.ClickState == ClickState.Clicked)
                 {
                     logger.Info($"Weapon pod {Array.IndexOf(WeaponPods, wp)} was clicked");
+                    Dialog = CreateWeaponPickerDialog(context.ObjectPool, wp);
                 }
             }
             foreach (var wave in Waves)
             {
                 wave.Update(context);
             }
+            if (Dialog != null)
+            {
+                Dialog.Update(context, Amount);
+                if (Dialog.State == DialogState.Closing)
+                {
+                    context.ObjectPool.ReleaseObject(Dialog);
+                    Dialog = null;
+                }
+            }
             base.Update(context);
         }
-
+        internal WeaponPickerDialog CreateWeaponPickerDialog(IObjectPool pool, WeaponPod pod)
+        {
+            Debug.Assert(Dialog is null);
+            var dialog = pool.GetObject<WeaponPickerDialog>();
+            dialog.Init(initContext, pod, GetDialogTopLeft(pod.Bounds), weaponsSettings);
+            dialog.InitContent(initContentContext);
+            return dialog;
+        }
+        internal Point GetDialogTopLeft(Rectangle entityBounds)
+        {
+            return new Point(entityBounds.Right, entityBounds.Top);
+        }
         public override void Draw(IDrawContext context)
         {
             foreach (var wp in WeaponPods)
@@ -102,6 +138,7 @@ namespace GraveDefensor.Shared.Drawable
                 }
             }
             DrawHeader(context);
+            Dialog?.Draw(context);
             base.Draw(context);
         }
         void DrawHeader(IDrawContext context)
@@ -129,7 +166,8 @@ namespace GraveDefensor.Shared.Drawable
 
         public override void ReleaseResources(IObjectPool objectPool)
         {
-            objectPool.ReleaseObject(WeaponPods);
+            objectPool.ReleaseObjects(WeaponPods);
+            objectPool.ReleaseObject(Dialog);
             changeStatusSubscription.Dispose();
             base.ReleaseResources(objectPool);
         }

@@ -1,4 +1,5 @@
 ﻿using GraveDefensor.Engine.Core;
+using GraveDefensor.Engine.Settings;
 using GraveDefensor.Shared.Core;
 using GraveDefensor.Shared.Drawable;
 using GraveDefensor.Shared.Services.Implementation;
@@ -21,6 +22,7 @@ namespace GraveDefensor.Shared
         readonly InitContentContext initContext;
         DrawContext drawContext;
         GraveDefensorMaster master;
+        MouseState lastMouseState;
 
         public GraveDefensorGame()
         {
@@ -56,7 +58,7 @@ namespace GraveDefensor.Shared
                 Width = graphics.GraphicsDevice.Viewport.Width,
                 Height = graphics.GraphicsDevice.Viewport.Height
             };
-            master.Init(new InitContext(Globals.ObjectPool), settings: null, windowSize); 
+            master.Init(new InitContext(Globals.ObjectPool), settings: TestSettings.CreateTestMaster(), windowSize); 
             base.Initialize();
         }
 
@@ -104,15 +106,15 @@ namespace GraveDefensor.Shared
 
             if (ScreenInfo.Default.HasMouse)
             {
-                MouseState mouseState = Mouse.GetState();
+                lastMouseState = Mouse.GetState();
 
-                if (graphics.GraphicsDevice.Viewport.Bounds.Contains(mouseState.X, mouseState.Y))
+                if (graphics.GraphicsDevice.Viewport.Bounds.Contains(lastMouseState.X, lastMouseState.Y))
                 {
                     // Update our sprites position to the current cursor location
-                    mousePosition.X = mouseState.X;
-                    mousePosition.Y = mouseState.Y;
+                    mousePosition.X = lastMouseState.X;
+                    mousePosition.Y = lastMouseState.Y;
                 }
-                master.Update(new UpdateContext(gameTime,  mouseState, Globals.ObjectPool));
+                master.Update(new UpdateContext(gameTime, lastMouseState, Globals.ObjectPool));
             }
             else
             {
@@ -133,7 +135,13 @@ namespace GraveDefensor.Shared
             master.Draw(drawContext);
             if (ScreenInfo.Default.HasMouse)
             {
-                spriteBatch.Draw(mouseTexture, mousePosition, Color.White);
+                spriteBatch.Draw(mouseTexture, mousePosition, sourceRectangle: null, Color.White, rotation: 0, 
+                    new Vector2(mouseTexture.Width / 2, mouseTexture.Height / 2), Vector2.One, SpriteEffects.None, 0);
+                if (Globals.ShowMouseCoordinates)
+                {
+                    var infoPosition = mousePosition + new Vector2(20, 20);
+                    spriteBatch.DrawString(GlobalContent.Default.CoordinatesFont, $"{lastMouseState.X}:{lastMouseState.Y}", infoPosition, Color.Yellow);
+                }
             }
             spriteBatch.End();
 

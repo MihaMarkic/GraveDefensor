@@ -49,11 +49,11 @@ namespace GraveDefensor.Engine.Services.Implementation
                 lock (sync)
                 {
                     (item as IPooledObject)?.ReleaseResources(this);
-                    objects[typeof(T)].Add(item);
+                    objects[item.GetType()].Add(item);
                 }
             }
         }
-        public void ReleaseObject<T>(IEnumerable<T> items)
+        public void ReleaseObjects<T>(IEnumerable<T> items)
         {
             if (items != null)
             {

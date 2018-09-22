@@ -7,6 +7,6 @@ namespace GraveDefensor.Engine.Services.Abstract
     {
         T GetObject<T>() where T : new();
         void ReleaseObject<T>(T item);
-        void ReleaseObject<T>(IEnumerable<T> items);
+        void ReleaseObjects<T>(IEnumerable<T> items);
     }
 }

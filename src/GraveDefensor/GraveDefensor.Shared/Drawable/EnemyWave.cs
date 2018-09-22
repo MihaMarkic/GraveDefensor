@@ -128,8 +128,8 @@ namespace GraveDefensor.Shared.Drawable
         }
         public override void ReleaseResources(IObjectPool objectPool)
         {
-            objectPool.ReleaseObject(enemies);
-            objectPool.ReleaseObject(completedEnemies);
+            objectPool.ReleaseObjects(enemies);
+            objectPool.ReleaseObjects(completedEnemies);
             objectPool.ReleaseObject(enemyTemplate);
             base.ReleaseResources(objectPool);
         }

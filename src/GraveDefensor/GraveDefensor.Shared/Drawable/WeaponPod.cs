@@ -20,11 +20,13 @@ namespace GraveDefensor.Shared.Drawable
 
         public void Init(Engine.Settings.WeaponPod settings)
         {
+            Init();
             Center = new Vector2(settings.Center.X, settings.Center.Y);
+            //Center = Vector2.Zero;
             Bounds = new Rectangle((int)Center.X - settings.Size.Width / 2, 
                 (int)Center.Y - settings.Size.Height / 2, settings.Size.Width, settings.Size.Height);
             Origin = new Vector2(settings.Size.Width / 2, settings.Size.Height / 2);
-            Init();
+            IsEnabled = true;
         }
         public override void InitContent(IInitContentContext context)
         {
@@ -56,6 +58,11 @@ namespace GraveDefensor.Shared.Drawable
         public override void Draw(IDrawContext context)
         {
             context.Draw(texture, Center, sourceRectangle:null, MouseHoverColorTransition.Current, 0, Origin, Vector2.One, SpriteEffects.None, 0);
+            if (Globals.ShowMouseCoordinates)
+            {
+                context.DrawString(GlobalContent.Default.CoordinatesFont, $"{Bounds.Left}:{Bounds.Top}-{Bounds.Right}:{Bounds.Bottom}", 
+                    new Vector2(Bounds.Left, Bounds.Top-20), Color.Yellow);
+            }
             base.Draw(context);
         }
         public override void ReleaseResources(IObjectPool objectPool)

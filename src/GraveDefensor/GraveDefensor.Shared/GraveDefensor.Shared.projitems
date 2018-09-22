@@ -10,10 +10,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Actions\ColorTransitionAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\MovementPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\BattleScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\Button.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\PickerButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\WeaponPickerButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\ClickableDrawable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Dialogs\WeaponPickerDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Drawable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\CreepWorm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\Enemy.cs" />
@@ -26,7 +31,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\ScrollableScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\WeaponPod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Dialogs\Dialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MouseStateExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\PointExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GraveDefensorGame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\ChangeStatusMessage.cs" />

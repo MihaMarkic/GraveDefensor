@@ -8,6 +8,8 @@ namespace GraveDefensor.Shared.Drawable
     {
         public static GlobalContent Default { get; private set; }
         public SpriteFont HudFont { get; }
+        public SpriteFont CoordinatesFont => HudFont;
+        public SpriteFont InfoFont => HudFont;
         protected GlobalContent(IInitContentContext context)
         {
             HudFont = context.Load<SpriteFont>("Fonts/Hud");

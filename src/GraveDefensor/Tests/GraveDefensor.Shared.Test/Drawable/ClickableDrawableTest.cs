@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using NUnit.Framework;
 using System;
+using System.Diagnostics;
 
 namespace GraveDefensor.Shared.Test.Drawable
 {
@@ -23,6 +24,7 @@ namespace GraveDefensor.Shared.Test.Drawable
         [TestFixture]
         public class Update: ClickableDrawableTest
         {
+            [DebuggerStepThrough]
             internal static UpdateContext GetUpdateContext(ButtonState buttonState, int x = 0, int y = 0) => 
                 new UpdateContext(new GameTime(),
                     new MouseState(x, y, default, leftButton: buttonState, default, default, default, default),
@@ -48,8 +50,19 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.ClickPosition, Is.EqualTo(new Point(0, 0)));
             }
             [Test]
-            public void WhenButtonIsPressedAndInsideBounds_ClickStateIsPressed()
+            public void WhenDisabledAndButtonIsPressedAndInsideBounds_ClickStateIsNone()
             {
+                Target.SetIsEnabled(false);
+                Target.OnIsClickWithinBoundaries = s => true;
+
+                Target.Update(GetUpdateContext(ButtonState.Pressed));
+
+                Assert.That(Target.ClickState, Is.EqualTo(ClickState.None));
+            }
+            [Test]
+            public void WhenEnabledAndButtonIsPressedAndInsideBounds_ClickStateIsPressed()
+            {
+                Target.SetIsEnabled(true);
                 Target.OnIsClickWithinBoundaries = s => true;
 
                 Target.Update(GetUpdateContext(ButtonState.Pressed));
@@ -57,8 +70,9 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.ClickState, Is.EqualTo(ClickState.Pressed));
             }
             [Test]
-            public void WhenButtonIsPressedAndInsideBounds_ClickPositionIsStored()
+            public void WhenEnabledAndButtonIsPressedAndInsideBounds_ClickPositionIsStored()
             {
+                Target.SetIsEnabled(true);
                 Target.OnIsClickWithinBoundaries = s => true;
 
                 Target.Update(GetUpdateContext(ButtonState.Pressed, x:1, y:2));
@@ -66,8 +80,9 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.ClickPosition, Is.EqualTo(new Point(1, 2)));
             }
             [Test]
-            public void WhenMovedWhilePressed_ClickStateIsMoved()
+            public void WhenEnabledAndMovedWhilePressed_ClickStateIsMoved()
             {
+                Target.SetIsEnabled(true);
                 Target.OnIsClickWithinBoundaries = s => true;
                 Target.Update(GetUpdateContext(ButtonState.Pressed, x: 0, y: 0));
 
@@ -76,8 +91,9 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.ClickState, Is.EqualTo(ClickState.Moved));
             }
             [Test]
-            public void WhenNotMovedWhilePressed_ClickStateIsPressed()
+            public void WhenEnabledAndNotMovedWhilePressed_ClickStateIsPressed()
             {
+                Target.SetIsEnabled(true);
                 Target.OnIsClickWithinBoundaries = s => true;
                 Target.Update(GetUpdateContext(ButtonState.Pressed, x: 1, y: 2));
 
@@ -86,8 +102,9 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.ClickState, Is.EqualTo(ClickState.Pressed));
             }
             [Test]
-            public void WhenButtonIsReleasedAfterPressed_ClickStateIsClicked()
+            public void WhenEnabledAndButtonIsReleasedAfterPressed_ClickStateIsClicked()
             {
+                Target.SetIsEnabled(true);
                 Target.OnIsClickWithinBoundaries = s => true;
                 Target.Update(GetUpdateContext(ButtonState.Pressed, x: 1, y: 2));
 
@@ -124,6 +141,8 @@ namespace GraveDefensor.Shared.Test.Drawable
     {
         public Func<MouseState, bool> OnIsClickWithinBoundaries;
 
+        public void SetIsEnabled(bool isEnabled) => IsEnabled = isEnabled;
+        public new void Init() => base.Init();
         public override bool IsClickWithinBoundaries(MouseState state) => OnIsClickWithinBoundaries?.Invoke(state) ?? false;
     }
 }
