@@ -1,4 +1,5 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
+using GraveDefensor.Shared.Core;
 using GraveDefensor.Shared.Drawable.Enemies;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
@@ -9,12 +10,17 @@ using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public class EnemyWave: Drawable
+    public interface IEnemyWave
+    {
+        IReadOnlyList<Enemy> Enemies { get; }
+        EnemyWaveStatus Status { get; }
+    }
+    public class EnemyWave: Drawable, IEnemyWave
     {
         static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         IInitContext initContext;
         Settings.EnemyWave settings;
-        Settings.Path path;
+        public Path Path { get; private set; }
         Settings.Enemy enemySettings;
         List<Enemy> enemies;
         List<Enemy> completedEnemies;
@@ -24,11 +30,12 @@ namespace GraveDefensor.Shared.Drawable
         public IReadOnlyList<Enemy> Enemies => enemies;
         public IReadOnlyList<Enemy> CompletedEnemies => completedEnemies;
         public EnemyWaveStatus Status { get; private set; }
-        public void Init(IInitContext context, Settings.EnemyWave settings, Settings.Enemy enemySettings, Settings.Path path)
+        public void Init(IInitContext context, Settings.EnemyWave settings, Settings.Enemy enemySettings, Settings.Path pathSettings)
         {
             initContext = context;
             this.settings = settings;
-            this.path = path;
+            Path = context.ObjectPool.GetObject<Path>();
+            Path.Init(pathSettings);
             this.enemySettings = enemySettings;
             enemies = context.ObjectPool.GetObject<List<Enemy>>();
             completedEnemies = context.ObjectPool.GetObject<List<Enemy>>();
@@ -120,7 +127,7 @@ namespace GraveDefensor.Shared.Drawable
         public void SpawnEnemy(UpdateContext context)
         {
             var enemy = EnemyFactory.GetEnemyFromPool(context.ObjectPool, enemySettings);
-            enemy.Init(initContext, enemySettings, path);
+            enemy.Init(initContext, enemySettings, Path);
             enemy.CopyContentFrom(enemyTemplate);
             enemy.Start();
             enemies.Add(enemy);
@@ -131,6 +138,7 @@ namespace GraveDefensor.Shared.Drawable
             objectPool.ReleaseObjects(enemies);
             objectPool.ReleaseObjects(completedEnemies);
             objectPool.ReleaseObject(enemyTemplate);
+            objectPool.ReleaseObject(Path);
             base.ReleaseResources(objectPool);
         }
     }

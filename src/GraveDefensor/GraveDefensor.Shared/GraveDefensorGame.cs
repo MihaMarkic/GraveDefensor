@@ -86,10 +86,6 @@ namespace GraveDefensor.Shared
         /// </summary>
         protected override void UnloadContent()
         {
-            if (ScreenInfo.Default.HasMouse)
-            {
-                mouseTexture.Dispose();
-            }
             Primitives2D.Unload();
             GlobalContent.Unload();
         }

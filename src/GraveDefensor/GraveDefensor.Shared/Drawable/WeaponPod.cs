@@ -1,4 +1,5 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
+using GraveDefensor.Shared.Drawable.Weapons;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using GraveDefensor.Windows.Actions;
@@ -6,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace GraveDefensor.Shared.Drawable
 {
@@ -17,6 +19,10 @@ namespace GraveDefensor.Shared.Drawable
         public Vector2 Origin { get; private set; }
         public bool IsMouseHovering { get; private set; }
         public ColorTransitionAction MouseHoverColorTransition { get; private set; }
+        /// <summary>
+        /// Weapon is assigned based to weapon picker.
+        /// </summary>
+        public IWeapon Weapon { get; set; }
 
         public void Init(Engine.Settings.WeaponPod settings)
         {
@@ -34,9 +40,10 @@ namespace GraveDefensor.Shared.Drawable
             MouseHoverColorTransition = Globals.ObjectPool.GetObject<ColorTransitionAction>().WithStartColor(Color.White);
             base.InitContent(context);
         }
-        public override void Update(UpdateContext context)
+        public void Update(UpdateContext context, EnemyWave[] waves)
         {
             UpdateMouseHover(context);
+            Weapon?.Update(context, waves);
             base.Update(context);
         }
         public override bool IsClickWithinBoundaries(MouseState state)
@@ -57,16 +64,18 @@ namespace GraveDefensor.Shared.Drawable
 
         public override void Draw(IDrawContext context)
         {
-            context.Draw(texture, Center, sourceRectangle:null, MouseHoverColorTransition.Current, 0, Origin, Vector2.One, SpriteEffects.None, 0);
+            context.Draw(texture, Center, sourceRectangle: null, MouseHoverColorTransition.Current, 0, Origin, Vector2.One, SpriteEffects.None, 0);
             if (Globals.ShowMouseCoordinates)
             {
-                context.DrawString(GlobalContent.Default.CoordinatesFont, $"{Bounds.Left}:{Bounds.Top}-{Bounds.Right}:{Bounds.Bottom}", 
-                    new Vector2(Bounds.Left, Bounds.Top-20), Color.Yellow);
+                context.DrawString(GlobalContent.Default.CoordinatesFont, $"{Bounds.Left}:{Bounds.Top}-{Bounds.Right}:{Bounds.Bottom}",
+                    new Vector2(Bounds.Left, Bounds.Top - 20), Color.Yellow);
             }
+            Weapon?.Draw(context);
             base.Draw(context);
         }
         public override void ReleaseResources(IObjectPool objectPool)
         {
+            objectPool.ReleaseObject(Weapon);
             objectPool.ReleaseObject(MouseHoverColorTransition);
             base.ReleaseResources(objectPool);
         }

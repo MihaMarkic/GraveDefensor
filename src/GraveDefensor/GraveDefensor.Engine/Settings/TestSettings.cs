@@ -17,12 +17,15 @@
                     {
                         Name = "Mini gun",
                         Price = 200,
-                        FiringRange = 70,
-                        TrackingRange = 75,
-                        Power = 3,
-                        Speed = 260,
+                        FiringRange = 140,
+                        TrackingRange = 150,
+                        Power = 5,
+                        RotationalSpeed = 260,
                         AirCapability = true,
-                        GroundCapability = true
+                        GroundCapability = true,
+                        CenterOffsetX = 9,
+                        ReloadTime = 200,
+                        FiringTime = 5,
                     },
                     Vulcan = new Vulcan
                     {
@@ -31,7 +34,7 @@
                         FiringRange = 65,
                         TrackingRange = 70,
                         Power = 4,
-                        Speed = 214,
+                        RotationalSpeed = 214,
                         AirCapability = true,
                         GroundCapability = true
                     },
@@ -42,7 +45,7 @@
                         FiringRange = 110,
                         TrackingRange = 120,
                         Power = 125,
-                        Speed = 12,
+                        RotationalSpeed = 12,
                         AirCapability = false,
                         GroundCapability = true
                     }

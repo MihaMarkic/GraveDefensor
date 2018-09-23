@@ -23,7 +23,6 @@ namespace GraveDefensor.Shared.Drawable
             FooterHeight = footerHeight;
             State = DialogState.Init;
             WasPressedOutside = false;
-
         }
         public virtual void Update(UpdateContext context, int currentAmount)
         {
@@ -52,7 +51,10 @@ namespace GraveDefensor.Shared.Drawable
             }
             base.Update(context);
         }
-
+        internal void Close()
+        {
+            State = DialogState.Closing;
+        }
         public override void Draw(IDrawContext context)
         {
             context.FillRectangle(ContentBounds, new Color(Color.Green, 0.2f));

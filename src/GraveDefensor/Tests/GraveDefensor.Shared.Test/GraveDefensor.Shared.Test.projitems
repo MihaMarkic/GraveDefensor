@@ -10,10 +10,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BaseTest`1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\MathOpsTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\PathTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\ClickableDrawableTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Dialogs\DialogTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyWaveTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\WeaponPodTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Weapons\RotationalWeaponTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Weapons\WeaponTest.cs" />
   </ItemGroup>
 </Project>

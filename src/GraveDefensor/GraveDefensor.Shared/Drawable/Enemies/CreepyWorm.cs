@@ -1,6 +1,6 @@
 ﻿namespace GraveDefensor.Shared.Drawable.Enemies
 {
-    public class CreepWorm : Enemy
+    public class CreepyWorm : Enemy
     {
 
     }

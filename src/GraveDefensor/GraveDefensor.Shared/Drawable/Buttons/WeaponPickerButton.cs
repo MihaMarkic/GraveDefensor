@@ -10,23 +10,23 @@ namespace GraveDefensor.Shared.Drawable.Buttons
     public class WeaponPickerButton : PickerButton
     {
         Texture2D image;
-        Settings.Weapon settings;
+        public Settings.Weapon WeaponSettings { get; private set; }
         SpriteFont descriptionFont;
 
         public void Init(Settings.Weapon weaponSettings, Point topLeft, int width)
         {
-            settings = weaponSettings;
+            WeaponSettings = weaponSettings;
             Init(new Rectangle(topLeft, new Point(width, Height)));
         }
         public override void InitContent(IInitContentContext context)
         {
-            image = context.Load<Texture2D>(Assets.Weapons.FromSettings(settings));
+            image = context.Load<Texture2D>(Assets.Weapons.FromSettings(WeaponSettings));
             descriptionFont = context.Load<SpriteFont>(Assets.Fonts.WeaponDescriptionFont);
             base.InitContent(context);
         }
         public void Update(UpdateContext context, int currentAmount)
         {
-            IsEnabled = currentAmount >= settings.Price;
+            IsEnabled = currentAmount >= WeaponSettings.Price;
             base.Update(context);
         }
 
@@ -38,14 +38,13 @@ namespace GraveDefensor.Shared.Drawable.Buttons
             context.Draw(image, new Vector2(Bounds.Left, Bounds.Top), Color.White);
             int left = Bounds.Left + image.Width + distanceToImage;
             int top = Bounds.Top + padding;
-            context.DrawString(descriptionFont, settings.Name, new Vector2(left,top), Color.Black);
+            context.DrawString(descriptionFont, WeaponSettings.Name, new Vector2(left,top), Color.Black);
             top += lineHeight;
-            context.DrawString(descriptionFont, $"{settings.Price:#,##0}e", new Vector2(left, top), Color.Black);
+            context.DrawString(descriptionFont, $"{WeaponSettings.Price:#,##0}e", new Vector2(left, top), Color.Black);
             base.DrawContent(context);
         }
         public override void ReleaseResources(IObjectPool objectPool)
         {
-            image.Dispose();
             base.ReleaseResources(objectPool);
         }
     }

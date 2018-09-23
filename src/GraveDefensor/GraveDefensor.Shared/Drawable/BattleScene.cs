@@ -1,4 +1,6 @@
 ﻿using GraveDefensor.Engine.Services.Abstract;
+using GraveDefensor.Shared.Drawable.Enemies;
+using GraveDefensor.Shared.Drawable.Weapons;
 using GraveDefensor.Shared.Messages;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
@@ -6,6 +8,7 @@ using Microsoft.Xna.Framework;
 using NLog;
 using Righthand.MessageBus;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Settings = GraveDefensor.Engine.Settings;
@@ -21,7 +24,7 @@ namespace GraveDefensor.Shared.Drawable
         Settings.Weapon[] weaponsSettings;
         public int Health { get; private set; }
         public int Amount { get; private set; }
-        public Dialog Dialog { get; private set; }
+        public WeaponPickerDialog WeaponPickerDialog { get; private set; }
         Settings.Size windowSize;
         Subscription changeStatusSubscription;
         /// <summary>
@@ -30,6 +33,7 @@ namespace GraveDefensor.Shared.Drawable
         public bool IsScrolling { get; private set; }
         IInitContext initContext;
         IInitContentContext initContentContext;
+        public Dialog ActiveDialog => WeaponPickerDialog;
         public void Init(IInitContext context, Settings.Battle settings, Settings.Enemies enemiesSettings, Settings.Weapon[] weaponsSettings, Settings.Size windowSize)
         {
             initContext = context;
@@ -79,38 +83,39 @@ namespace GraveDefensor.Shared.Drawable
         /// <summary>
         /// Click on entity is allowed only when not scrolling and dialog is absent
         /// </summary>
-        internal bool CanEntityClick => !IsScrolling && Dialog == null;
+        internal bool CanEntityClick => !IsScrolling && WeaponPickerDialog == null;
         public override void Update(UpdateContext context)
         {
             // converts mouse coordinates to absolute to scene
             var childContext = OffsetUpdateContext(context);
             foreach (var wp in WeaponPods)
             {
-                wp.Update(context);
+                wp.Update(context, Waves);
                 if (CanEntityClick && wp.ClickState == ClickState.Clicked)
                 {
                     logger.Info($"Weapon pod {Array.IndexOf(WeaponPods, wp)} was clicked");
-                    Dialog = CreateWeaponPickerDialog(context.ObjectPool, wp);
+                    WeaponPickerDialog = CreateWeaponPickerDialog(context.ObjectPool, wp);
                 }
             }
             foreach (var wave in Waves)
             {
                 wave.Update(context);
             }
-            if (Dialog != null)
+            var activeDialog = ActiveDialog;
+            if (activeDialog != null)
             {
-                Dialog.Update(context, Amount);
-                if (Dialog.State == DialogState.Closing)
+                activeDialog.Update(context, Amount);
+                if (activeDialog.State == DialogState.Closing)
                 {
-                    context.ObjectPool.ReleaseObject(Dialog);
-                    Dialog = null;
+                    context.ObjectPool.ReleaseObject(activeDialog);
+                    WeaponPickerDialog = null;
                 }
             }
             base.Update(context);
         }
         internal WeaponPickerDialog CreateWeaponPickerDialog(IObjectPool pool, WeaponPod pod)
         {
-            Debug.Assert(Dialog is null);
+            Debug.Assert(ActiveDialog is null);
             var dialog = pool.GetObject<WeaponPickerDialog>();
             dialog.Init(initContext, pod, GetDialogTopLeft(pod.Bounds), weaponsSettings);
             dialog.InitContent(initContentContext);
@@ -138,7 +143,7 @@ namespace GraveDefensor.Shared.Drawable
                 }
             }
             DrawHeader(context);
-            Dialog?.Draw(context);
+            ActiveDialog?.Draw(context);
             base.Draw(context);
         }
         void DrawHeader(IDrawContext context)
@@ -167,7 +172,7 @@ namespace GraveDefensor.Shared.Drawable
         public override void ReleaseResources(IObjectPool objectPool)
         {
             objectPool.ReleaseObjects(WeaponPods);
-            objectPool.ReleaseObject(Dialog);
+            objectPool.ReleaseObject(WeaponPickerDialog);
             changeStatusSubscription.Dispose();
             base.ReleaseResources(objectPool);
         }

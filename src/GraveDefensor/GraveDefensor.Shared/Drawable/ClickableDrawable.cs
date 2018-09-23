@@ -4,12 +4,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public abstract class ClickableDrawable : Drawable
+    public interface IClickableDrawable: IDrawable
+    {
+        Point ClickPosition { get; }
+        ClickState ClickState { get; }
+        bool IsEnabled { get; }
+    }
+    public abstract class ClickableDrawable : Drawable, IClickableDrawable
     {
         public bool IsEnabled { get; protected set; }
         public ClickState ClickState { get; private set; }
         public Point ClickPosition { get; private set; }
-        protected void Init()
+        protected virtual void Init()
         {
             ClickState = ClickState.None;
             IsEnabled = false;

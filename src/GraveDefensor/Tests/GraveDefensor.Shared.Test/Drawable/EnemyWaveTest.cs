@@ -22,7 +22,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             var context = Substitute.For<IInitContext>();
             var objectPool = Substitute.For<IObjectPool>();
             objectPool.GetObject<List<Enemy>>().Returns(c => new List<Enemy>());
-            objectPool.GetObject<CreepWorm>().Returns(c => new CreepWorm());
+            objectPool.GetObject<CreepyWorm>().Returns(c => new CreepyWorm());
             objectPool.GetObject<Path>().Returns(c => new Path());
             context.ObjectPool.Returns(objectPool);
             return context;
@@ -32,7 +32,7 @@ namespace GraveDefensor.Shared.Test.Drawable
         {
 
             var objectPool = Substitute.For<IObjectPool>();
-            objectPool.GetObject<CreepWorm>().Returns(c => new CreepWorm());
+            objectPool.GetObject<CreepyWorm>().Returns(c => new CreepyWorm());
             objectPool.GetObject<List<Enemy>>().Returns(c => new List<Enemy>());
             return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, objectPool);
         }

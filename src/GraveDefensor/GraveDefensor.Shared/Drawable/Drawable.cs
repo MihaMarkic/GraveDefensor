@@ -5,15 +5,21 @@ using GraveDefensor.Shared.Services.Implementation;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public abstract class Drawable: IPooledObject
+    public interface IDrawable
+    {
+        void Draw(IDrawContext context);
+        void InitContent(IInitContentContext context);
+        void Update(UpdateContext context);
+    }
+    public abstract class Drawable : IDrawable, IPooledObject
     {
         public virtual void InitContent(IInitContentContext context)
         { }
         public virtual void Update(UpdateContext context)
-        {}
+        { }
         public virtual void Draw(IDrawContext context)
         { }
         public virtual void ReleaseResources(IObjectPool objectPool)
-        {}
+        { }
     }
 }

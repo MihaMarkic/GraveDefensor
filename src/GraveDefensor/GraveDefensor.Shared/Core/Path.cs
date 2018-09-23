@@ -45,6 +45,10 @@ namespace GraveDefensor.Shared.Core
         {
             return Math.Atan2(b.Y - a.Y, b.X - a.X);
         }
+        public static double GetAngleBetweenVectors(Vector2 a, Vector2 b)
+        {
+            return Math.Atan2(b.Y - a.Y, b.X - a.X);
+        }
         public double CalculateLengthFromSegment(int startSegment)
         {
             double length = 0;

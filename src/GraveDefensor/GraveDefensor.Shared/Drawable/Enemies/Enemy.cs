@@ -13,8 +13,9 @@ namespace GraveDefensor.Shared.Drawable.Enemies
     public abstract class Enemy: Drawable
     {
         public static TimeSpan VisibleBeforeDone { get; } = TimeSpan.FromSeconds(1);
+        public static TimeSpan VisibleKilledBeforeDone { get; } = TimeSpan.FromSeconds(.5);
         Texture2D texture;
-        public Vector2 Center { get; private set; }
+        public Vector2 Center { get; protected set; }
         public Vector2 OffsetToCenter { get; private set; }
         public float Angle { get; set; }
         public int Width { get; private set; }
@@ -22,13 +23,18 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         public int LastPoint { get; set; }
         public double Traversed { get; private set; }
         public double SegmentLength { get; set; }
-        public EnemyStatus Status { get; private set; }
+        public double DistanceToEnd { get; protected set; }
+        public EnemyStatus Status { get; protected set; }
         public int Health { get; private set; }
         public TimeSpan FinishedStatusSpan { get; private set; }
+        public TimeSpan KilledStatusSpan { get; private set; }
         IDispatcher dispatcher;
         Settings.Enemy settings;
         public Path Path { get; private set; }
-        
+        /// <summary>
+        /// Determines whether the enemy can be fired upon
+        /// </summary>
+        public bool IsTarget => Status == EnemyStatus.Ready || Status == EnemyStatus.Frozen || Status == EnemyStatus.Walking;
         public void Init(IInitContext context, Settings.Enemy settings, Path path)
         {
             this.settings = settings;
@@ -47,10 +53,12 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         public void Start()
         {
             LastPoint = 0;
+            Center = Path.Settings.Points[0].AsVector2();
             SegmentLength = Path.SegmentsLengths[LastPoint];
             Angle = (float)Path.Angles[LastPoint];
             Status = EnemyStatus.Walking;
             FinishedStatusSpan = TimeSpan.FromSeconds(1);
+            DistanceToEnd = Path.CalculateLengthFromSegment(0);
         }
         public override void Update(UpdateContext context)
         {
@@ -58,6 +66,7 @@ namespace GraveDefensor.Shared.Drawable.Enemies
             {
                 case EnemyStatus.Walking:
                     double distance = settings.Speed * context.GameTime.ElapsedGameTime.TotalSeconds;
+                    DistanceToEnd -= distance;
                     if (Traversed + distance < SegmentLength)
                     {
                         Traversed += distance;
@@ -87,6 +96,13 @@ namespace GraveDefensor.Shared.Drawable.Enemies
                         TransitionToDone();
                     }
                     break;
+                case EnemyStatus.Killed:
+                    KilledStatusSpan -= context.GameTime.ElapsedGameTime;
+                    if (KilledStatusSpan < TimeSpan.Zero)
+                    {
+                        TransitionToDone();
+                    }
+                    break;
             }
             base.Update(context);
         }
@@ -95,10 +111,25 @@ namespace GraveDefensor.Shared.Drawable.Enemies
             Center = Path.LastPoint.AsVector2();
             Status = EnemyStatus.Finished;
             dispatcher.Dispatch(new ChangeStatusMessage(0, -Health));
+            DistanceToEnd = 0;
+        }
+        internal void TransitionToKilled()
+        {
+            KilledStatusSpan = TimeSpan.FromMilliseconds(500);
+            Status = EnemyStatus.Killed;
         }
         internal void TransitionToDone()
         {
             Status = EnemyStatus.Done;
+        }
+        internal void Hit(int power)
+        {
+            Health -= power;
+            if (Health < 0)
+            {
+                Health = 0;
+                TransitionToKilled();
+            }
         }
         public override void Draw(IDrawContext context)
         {
@@ -135,22 +166,9 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         }
         public bool IsDone => Status == EnemyStatus.Done;
         public bool IsVisible => Status != EnemyStatus.Ready && Status != EnemyStatus.Done;
-        public double DistanceToEnd
+        public double CalculateDistanceToEnd()
         {
-            get
-            {
-                return Path.SegmentsLengths[LastPoint] - Traversed + Path.CalculateLengthFromSegment(LastPoint+1);
-            }
+            return Path.SegmentsLengths[LastPoint] - Traversed + Path.CalculateLengthFromSegment(LastPoint+1);
         }
-    }
-
-    public enum EnemyStatus
-    {
-        Ready,
-        Walking,
-        Killed,
-        Frozen,
-        Finished,
-        Done
     }
 }

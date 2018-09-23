@@ -13,7 +13,7 @@ namespace GraveDefensor.Shared.Drawable.Enemies
             switch (settings)
             {
                 case Settings.CreepyWorm creepyWorm:
-                    enemy = pool.GetObject<CreepWorm>();
+                    enemy = pool.GetObject<CreepyWorm>();
                     break;
                 case Settings.Skeleton skeleton:
                     enemy = pool.GetObject<Skeleton>();

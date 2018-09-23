@@ -177,6 +177,24 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Finished));
             }
         }
+        [TestFixture]
+        public class TransitionToKilled: EnemyTest
+        {
+            [Test]
+            public void AfterTransition_StateIsKilled()
+            {
+                Target.TransitionToKilled();
+
+                Assert.That(Target.Status, Is.EqualTo(EnemyStatus.Killed));
+            }
+            [Test]
+            public void AfterTransition_KilledStatusSpanIsVisibleKilledBeforeDone()
+            {
+                Target.TransitionToKilled();
+
+                Assert.That(Target.KilledStatusSpan, Is.EqualTo(Enemy.VisibleKilledBeforeDone));
+            }
+        }
 
         [TestFixture]
         public class DistanceToEnd : EnemyTest

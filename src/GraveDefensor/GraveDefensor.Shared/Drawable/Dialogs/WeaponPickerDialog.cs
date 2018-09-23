@@ -4,6 +4,7 @@ using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Drawable.Buttons;
 using GraveDefensor.Engine.Services.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
+using GraveDefensor.Shared.Drawable.Weapons;
 
 namespace GraveDefensor.Shared.Drawable
 {
@@ -13,10 +14,13 @@ namespace GraveDefensor.Shared.Drawable
         public WeaponPod Pod { get; private set; }
         Settings.Weapon[] weaponSettings;
         public WeaponPickerButton[] Buttons { get; private set; }
+        IInitContext initContext;
+        IInitContentContext initContentContext;
         public void Init(IInitContext initContext, WeaponPod pod, Point topLeft, Settings.Weapon[] weaponSettings)
         {
             const int width = 300;
             const int headerHeight = 30;
+            this.initContext = initContext;
             Pod = pod;
             this.weaponSettings = weaponSettings;
             int height = MeasureContentHeight(weaponSettings.Length);
@@ -44,17 +48,30 @@ namespace GraveDefensor.Shared.Drawable
         }
         public override void InitContent(IInitContentContext context)
         {
+            initContentContext = context;
             foreach (var button in Buttons)
             {
                 button.InitContent(context);
             }
             base.InitContent(context);
         }
+        internal IWeapon CreateWeapon(Settings.Weapon weaponSettings)
+        {
+            var weapon = WeaponFactory.GetWeaponFromPool(initContext, weaponSettings, Pod.Center);
+            weapon.InitContent(initContentContext);
+            return weapon;
+        }
         public override void Update(UpdateContext context, int currentAmount)
         {
             foreach (var button in Buttons)
             {
                 button.Update(context, currentAmount);
+                if (button.ClickState == ClickState.Clicked)
+                {
+                    var weaponSettings = button.WeaponSettings;
+                    Pod.Weapon = CreateWeapon(weaponSettings);
+                    Close();
+                }
             }
             base.Update(context, currentAmount);
         }
