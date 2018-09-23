@@ -42,10 +42,5 @@ namespace GraveDefensor.Shared.Services.Implementation
 				return hash;
 			}
         }
-
-        public UpdateContext CreateHorizontalOffset(int offset)
-        {
-            return Clone(mouseState: MouseState.OffsetHorizontally(offset));
-        }
     }
 }

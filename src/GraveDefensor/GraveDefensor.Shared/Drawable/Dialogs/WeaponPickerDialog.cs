@@ -5,6 +5,7 @@ using GraveDefensor.Shared.Drawable.Buttons;
 using GraveDefensor.Engine.Services.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using GraveDefensor.Shared.Drawable.Weapons;
+using GraveDefensor.Shared.Messages;
 
 namespace GraveDefensor.Shared.Drawable
 {
@@ -16,18 +17,23 @@ namespace GraveDefensor.Shared.Drawable
         public WeaponPickerButton[] Buttons { get; private set; }
         IInitContext initContext;
         IInitContentContext initContentContext;
-        public void Init(IInitContext initContext, WeaponPod pod, Point topLeft, Settings.Weapon[] weaponSettings)
+
+        public void Init(IInitContext initContext, WeaponPod pod, Settings.Weapon[] weaponSettings)
         {
-            const int width = 300;
+            const int width = 200;
             const int headerHeight = 30;
             this.initContext = initContext;
             Pod = pod;
             this.weaponSettings = weaponSettings;
             int height = MeasureContentHeight(weaponSettings.Length);
-            Init(topLeft, width, height, headerHeight: headerHeight, null);
-            Buttons = CreateButtons(initContext.ObjectPool, weaponSettings);
+            Init(width, height, headerHeight: headerHeight, null);
         }
 
+        public override void Position(Point topLeft)
+        {
+            base.Position(topLeft);
+            Buttons = CreateButtons(initContext.ObjectPool, weaponSettings);
+        }
         internal static int MeasureContentHeight(int numberOfButtons)
         {
             return 2 + (numberOfButtons-1) * HorizontalPadding + numberOfButtons * WeaponPickerButton.Height;
@@ -70,6 +76,7 @@ namespace GraveDefensor.Shared.Drawable
                 {
                     var weaponSettings = button.WeaponSettings;
                     Pod.Weapon = CreateWeapon(weaponSettings);
+                    initContext.Dispatcher.Dispatch(new ChangeStatusMessage(amount: -weaponSettings.Price, health: 0));
                     Close();
                 }
             }

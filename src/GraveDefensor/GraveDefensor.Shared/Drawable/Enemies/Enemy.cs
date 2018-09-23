@@ -116,6 +116,7 @@ namespace GraveDefensor.Shared.Drawable.Enemies
         internal void TransitionToKilled()
         {
             KilledStatusSpan = TimeSpan.FromMilliseconds(500);
+            dispatcher.Dispatch(new ChangeStatusMessage(settings.Award, 0));
             Status = EnemyStatus.Killed;
         }
         internal void TransitionToDone()

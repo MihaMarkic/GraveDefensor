@@ -20,40 +20,41 @@ namespace GraveDefensor.Shared.Test.Drawable.Dialogs
             [Test]
             public void AfterInit_StateIsOpen()
             {
-                Target.Init(default, default, default, default, default);
+                Target.Init(default, default, default, default);
 
                 Assert.That(Target.State, Is.EqualTo(DialogState.Init));
             }
             [Test]
             public void AfterInit_WasPressedOutsideIsFalse()
             {
-                Target.Init(default, default, default, default, default);
+                Target.Init(default, default, default, default);
 
                 Assert.That(Target.WasPressedOutside, Is.False);
             }
             [Test]
             public void WasPressedOutside_WasPressedOutsideIsFalse()
             {
-                Target.Init(new Point(10, 20), width: 50, contentHeight: 30, null, null);
+                Target.Init(width: 50, contentHeight: 30, null, null);
+                Target.Position(new Point(10, 20));
                 // transition from init to open
                 Target.Update(GetUpdateContext(ButtonState.Released));
                 Target.Update(GetUpdateContext(ButtonState.Pressed));
                 Target.Update(GetUpdateContext(ButtonState.Released));
 
-                Target.Init(default, default, default, default, default);
+                Target.Init(default, default, default, default);
 
                 Assert.That(Target.WasPressedOutside, Is.False);
             }
             [Test]
             public void WasClosing_WasPressedOutsideIsFalse()
             {
-                Target.Init(new Point(10, 20), width: 50, contentHeight: 30, null, null);
+                Target.Init(width: 50, contentHeight: 30, null, null);
                 // transition from init to open
                 Target.Update(GetUpdateContext(ButtonState.Released));
                 Target.Update(GetUpdateContext(ButtonState.Pressed));
                 Target.Update(GetUpdateContext(ButtonState.Released));
 
-                Target.Init(default, default, default, default, default);
+                Target.Init(default, default, default, default);
 
                 Assert.That(Target.State, Is.EqualTo(DialogState.Init));
             }
@@ -64,7 +65,8 @@ namespace GraveDefensor.Shared.Test.Drawable.Dialogs
             [SetUp]
             public new void SetUp()
             {
-                Target.Init(new Point(10, 20), width: 50, contentHeight: 30, null, null);
+                Target.Init(width: 50, contentHeight: 30, null, null);
+                Target.Position(new Point(10, 20));
                 // transition from init to open
                 Target.Update(GetUpdateContext(ButtonState.Released));
             }

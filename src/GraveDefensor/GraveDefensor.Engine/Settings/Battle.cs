@@ -3,6 +3,7 @@ namespace GraveDefensor.Engine.Settings
 {
     public class Battle
     {
+        public string Background { get; set; }
         public int Health { get; set; }
         public int Amount { get; set; }
         public Path[] Paths { get; set; }

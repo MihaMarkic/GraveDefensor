@@ -7,8 +7,9 @@ namespace GraveDefensor.Shared
     {
         public static class Weapons
         {
-            public const string MiniGun = "Weapons/MiniGun";
-            public const string Vulcan = "Weapons/Vulcan";
+            public static string MiniGun = GetAbsolute(nameof(MiniGun));
+            public static string Vulcan = GetAbsolute(nameof(Vulcan));
+            public static string GetAbsolute(string name) => $"{nameof(Weapons)}/{name}";
 
             public static string FromSettings(Settings.Weapon weapon)
             {
@@ -23,7 +24,12 @@ namespace GraveDefensor.Shared
         }
         public static class Fonts
         {
-            public const string WeaponDescriptionFont = "Fonts/Hud";
+            public static string WeaponDescriptionFont = $"{nameof(Fonts)}/Hud";
+        }
+        public static class Scenes
+        {
+            public static string Battle1 = GetAbsolute(nameof(Battle1));
+            public static string GetAbsolute(string name) => $"{nameof(Scenes)}/{name}";
         }
     }
 }

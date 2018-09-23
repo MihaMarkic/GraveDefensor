@@ -127,8 +127,10 @@ namespace GraveDefensor.Shared
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: master.Transformation);
             master.Draw(drawContext);
+            spriteBatch.End();
+            spriteBatch.Begin();
             if (ScreenInfo.Default.HasMouse)
             {
                 spriteBatch.Draw(mouseTexture, mousePosition, sourceRectangle: null, Color.White, rotation: 0, 
@@ -136,7 +138,8 @@ namespace GraveDefensor.Shared
                 if (Globals.ShowMouseCoordinates)
                 {
                     var infoPosition = mousePosition + new Vector2(20, 20);
-                    spriteBatch.DrawString(GlobalContent.Default.CoordinatesFont, $"{lastMouseState.X}:{lastMouseState.Y}", infoPosition, Color.Yellow);
+                    spriteBatch.DrawString(GlobalContent.Default.CoordinatesFont, 
+                        $"{lastMouseState.X/master.CurrentScene.Scale.X}:{lastMouseState.Y/master.CurrentScene.Scale.X}", infoPosition, Color.Black);
                 }
             }
             spriteBatch.End();

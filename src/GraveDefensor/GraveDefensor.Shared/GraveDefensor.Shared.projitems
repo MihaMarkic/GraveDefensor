@@ -14,7 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\MathOps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\MovementPath.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drawable\BattleScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scenes\BattleScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\Button.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\PickerButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\WeaponPickerButton.cs" />
@@ -31,8 +31,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\GraveDefensorMaster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Master.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Path.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scene.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drawable\ScrollableScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scenes\Scene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scenes\ScrollableScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\WeaponPod.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Dialogs\Dialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Weapons\FiringState.cs" />
@@ -55,5 +55,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\InitContentContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\InitContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Implementation\UpdateContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Drawable\Scenes\" />
   </ItemGroup>
 </Project>

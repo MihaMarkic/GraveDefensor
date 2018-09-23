@@ -1,11 +1,14 @@
 ﻿using Settings = GraveDefensor.Engine.Settings;
 using GraveDefensor.Shared.Service.Abstract;
+using Microsoft.Xna.Framework;
+using GraveDefensor.Shared.Drawable.Scenes;
 
 namespace GraveDefensor.Shared.Drawable
 {
     public sealed class GraveDefensorMaster: Master
     {
         Settings.Size windowSize;
+        public Matrix Transformation => CurrentScene.Transformation;
         public void Init(IInitContext context, Settings.Master settings, Settings.Size windowSize)
         {
             this.windowSize = windowSize;

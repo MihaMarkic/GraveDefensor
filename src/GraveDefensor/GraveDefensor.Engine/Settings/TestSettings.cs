@@ -60,17 +60,28 @@
         {
             return new Battle
             {
+                Background = "Battle1",
                 Health = 500,
                 Amount = 200,
                 WeaponPlaces = new[] {
                     new WeaponPod
                     {
-                        Center = new Point { X = 100, Y = 120},
+                        Center = new Point { X = 100, Y = 220},
                         Size = new Size { Width = 32, Height = 32 }
                     },
                     new WeaponPod
                     {
-                        Center = new Point { X = 200, Y = 170},
+                        Center = new Point { X = 200, Y = 270},
+                        Size = new Size { Width = 32, Height = 32 }
+                    },
+                    new WeaponPod
+                    {
+                        Center = new Point { X = 280, Y = 330},
+                        Size = new Size { Width = 32, Height = 32 }
+                    },
+                    new WeaponPod
+                    {
+                        Center = new Point { X = 240, Y = 580 },
                         Size = new Size { Width = 32, Height = 32 }
                     }
                 },
@@ -81,12 +92,12 @@
                         Id = "Core",
                         Points = new Point[]
                         {
-                            new Point { X = -10, Y = 70 },
-                            new Point { X = 700, Y = 70 },
-                            new Point { X = 720, Y = 90 },
-                            new Point { X = 720, Y = 420 },
-                            new Point { X = 700, Y = 440 },
-                            new Point { X = 32, Y = 440 },
+                            new Point { X = -10, Y = 170 },
+                            new Point { X = 300, Y = 170 },
+                            new Point { X = 320, Y = 190 },
+                            new Point { X = 320, Y = 520 },
+                            new Point { X = 300, Y = 540 },
+                            new Point { X = 32, Y = 540 },
                         }
                     }
                 },

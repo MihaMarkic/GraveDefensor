@@ -180,6 +180,28 @@ namespace GraveDefensor.Shared.Test.Drawable
         [TestFixture]
         public class TransitionToKilled: EnemyTest
         {
+            [SetUp]
+            public new void SetUp()
+            {
+                var path = new Path();
+                path.Init(new Settings.Path
+                {
+                    Points = new Settings.Point[]
+                        {
+                            new Settings.Point { X = 0, Y = 0},
+                            new Settings.Point { X = 100, Y = 0},   // length is 100
+                            new Settings.Point { X = 110, Y = 10},  // length is Sqrt(200)
+                            new Settings.Point { X = 110, Y = 40}   // length is 30
+                        }
+                });
+                Target.Init(Substitute.For<IInitContext>(),
+                    new MockEnemySettings
+                    {
+                        Name = "Enemy",
+                        Speed = 1000
+                    }, path);
+                base.SetUp();
+            }
             [Test]
             public void AfterTransition_StateIsKilled()
             {

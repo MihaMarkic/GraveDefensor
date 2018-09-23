@@ -7,22 +7,28 @@ namespace GraveDefensor.Shared.Drawable
 {
     public abstract class Dialog: Drawable
     {
-        public Point TopLeft { get; private set; }
+        public Point TopLeft { get; protected set; }
         public  int Width { get; private set; }
         public Rectangle ContentBounds { get; private set; }
         public int? HeaderHeight { get; private set; }
         public int? FooterHeight { get; private set; }
         public DialogState State { get; private set; }
         public bool WasPressedOutside { get; private set; }
-        public void Init(Point topLeft, int width, int contentHeight, int? headerHeight, int? footerHeight)
+        public Point Size => new Point(Width, ContentBounds.Height + HeaderHeight ?? 0 + FooterHeight ?? 0);
+        int contentHeight;
+        public void Init(int width, int contentHeight, int? headerHeight, int? footerHeight)
         {
-            TopLeft = topLeft;
+            this.contentHeight = contentHeight;
             Width = width;
-            ContentBounds = new Rectangle(topLeft.X, topLeft.Y + headerHeight ?? 0, width, contentHeight);
             HeaderHeight = headerHeight;
             FooterHeight = footerHeight;
             State = DialogState.Init;
             WasPressedOutside = false;
+        }
+        public virtual void Position(Point topLeft)
+        {
+            TopLeft = topLeft;
+            ContentBounds = new Rectangle(topLeft.X, topLeft.Y + HeaderHeight ?? 0, Width, contentHeight);
         }
         public virtual void Update(UpdateContext context, int currentAmount)
         {

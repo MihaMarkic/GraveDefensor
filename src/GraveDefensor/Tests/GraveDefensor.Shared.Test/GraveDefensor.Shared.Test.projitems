@@ -19,5 +19,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\WeaponPodTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Weapons\RotationalWeaponTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Weapons\WeaponTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenes\BattleSceneTest.cs" />
   </ItemGroup>
 </Project>
