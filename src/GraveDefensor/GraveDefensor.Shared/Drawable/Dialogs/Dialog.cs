@@ -63,7 +63,7 @@ namespace GraveDefensor.Shared.Drawable
         }
         public override void Draw(IDrawContext context)
         {
-            context.FillRectangle(ContentBounds, new Color(Color.Green, 0.2f));
+            context.FillRectangle(ContentBounds, new Color(Color.Green, 0.8f));
             DrawContent(context);
             base.Draw(context);
         }
