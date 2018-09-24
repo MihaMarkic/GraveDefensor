@@ -20,7 +20,7 @@ namespace GraveDefensor.Android
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            ScreenInfo.Default = ScreenInfo.Window(768, 1280, hasMouse: false);
+            ScreenInfo.Default = ScreenInfo.FullScreen(hasMouse: false);
             var g = new GraveDefensorGame();
             SetContentView((View)g.Services.GetService(typeof(View)));
             g.Run();
