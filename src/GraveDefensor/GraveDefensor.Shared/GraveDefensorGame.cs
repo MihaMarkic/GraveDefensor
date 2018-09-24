@@ -46,7 +46,7 @@ namespace GraveDefensor.Shared
         /// </summary>
         protected override void Initialize()
         {
-            TouchPanel.EnabledGestures = GestureType.Tap | GestureType.DoubleTap;
+            TouchPanel.EnabledGestures = GestureType.Tap;
             if (ScreenInfo.Default.HasMouse)
             {
                 mousePosition = new Vector2(
