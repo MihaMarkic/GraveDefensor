@@ -45,14 +45,14 @@ namespace GraveDefensor.Shared.Drawable
             Weapon?.Update(context, waves);
             base.Update(context);
         }
-        public override bool IsClickWithinBoundaries(MouseState state)
+        public override bool IsClickWithinBoundaries(Point point)
         {
-            return Bounds.Contains(state.AsPoint());
+            return Bounds.Contains(point);
         }
         private void UpdateMouseHover(UpdateContext context)
         {
             bool wasHovering = IsMouseHovering;
-            IsMouseHovering = Bounds.Contains(new Point(context.MouseState.X, context.MouseState.Y));
+            IsMouseHovering = context.CursorPosition.HasValue && Bounds.Contains(new Point(context.CursorPosition.Value.X, context.CursorPosition.Value.Y));
             if (wasHovering ^ IsMouseHovering)
             {
                 MouseHoverColorTransition.Start(MouseHoverColorTransition.Current, IsMouseHovering ? Color.Red : Color.White, 

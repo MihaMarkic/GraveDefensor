@@ -37,9 +37,9 @@ namespace GraveDefensor.Shared.Drawable.Buttons
             }
             base.Draw(context);
         }
-        public override bool IsClickWithinBoundaries(MouseState state)
+        public override bool IsClickWithinBoundaries(Point point)
         {
-            return Bounds.Contains(state.AsPoint());
+            return Bounds.Contains(point);
         }
         public virtual void DrawContent(IDrawContext context)
         { }

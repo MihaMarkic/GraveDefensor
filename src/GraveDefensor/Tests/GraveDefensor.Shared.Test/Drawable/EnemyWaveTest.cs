@@ -34,7 +34,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             var objectPool = Substitute.For<IObjectPool>();
             objectPool.GetObject<CreepyWorm>().Returns(c => new CreepyWorm());
             objectPool.GetObject<List<Enemy>>().Returns(c => new List<Enemy>());
-            return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, objectPool);
+            return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, default, default, objectPool);
         }
         [DebuggerStepThrough]
         public static Settings.Path GetPath() => new Settings.Path

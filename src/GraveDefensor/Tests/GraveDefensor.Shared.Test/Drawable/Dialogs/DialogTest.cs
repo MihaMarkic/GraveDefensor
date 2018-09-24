@@ -1,4 +1,5 @@
-﻿using GraveDefensor.Shared.Drawable;
+﻿using GraveDefensor.Shared.Core;
+using GraveDefensor.Shared.Drawable;
 using GraveDefensor.Shared.Service.Abstract;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
@@ -12,7 +13,9 @@ namespace GraveDefensor.Shared.Test.Drawable.Dialogs
         internal static UpdateContext GetUpdateContext(ButtonState buttonState, int x = 0, int y = 0) =>
                new UpdateContext(new GameTime(),
                    new MouseState(x, y, default, leftButton: buttonState, default, default, default, default),
-                default);
+                   new TouchState(),
+                   new Point(x, y),
+                   default);
 
         [TestFixture]
         public class Init: DialogTest

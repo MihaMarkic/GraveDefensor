@@ -28,23 +28,31 @@ namespace GraveDefensor.Shared.Drawable.Scenes
         {
             if (CanScroll())
             {
-                if (context.MouseState.LeftButton == ButtonState.Pressed)
+                if (context.LeftButton == ButtonState.Pressed)
                 {
                     if (LastPressedOrigin.HasValue)
                     {
                         int maxOffset = (int)(Size.X * Scale.X - WindowSize.X);
-                        int newOffset = Offset + (LastPressedOrigin.Value - context.MouseState.X);
+                        int newOffset = Offset + (LastPressedOrigin.Value - context.CursorPosition.Value.X);
                         Offset = Math.Max(0, Math.Min(maxOffset, newOffset));
                         Transformation = Matrix.CreateScale(Scale.X) * Matrix.CreateTranslation(-Offset, 0, 0);
                     }
-                    LastPressedOrigin = context.MouseState.X;
+                    LastPressedOrigin = context.CursorPosition.Value.X;
                 }
                 else
                 {
                     LastPressedOrigin = null;
                 }
             }
-            return context.Clone(mouseState: context.MouseState.OffsetHorizontallyAndScale(Offset, Scale.X));
+            if (context.CursorPosition.HasValue)
+            {
+                var cursorPosition = context.CursorPosition.Value;
+                return context.Clone(cursorPosition: new Point((int)((cursorPosition.X + Offset) / Scale.X), (int)(cursorPosition.Y / Scale.Y)));
+            }
+            else
+            {
+                return context;
+            }
         }
         protected abstract bool CanScroll();
     }

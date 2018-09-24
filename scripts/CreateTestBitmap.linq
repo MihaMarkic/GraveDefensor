@@ -7,7 +7,7 @@
   <Namespace>System.Drawing.Imaging</Namespace>
 </Query>
 
-var bmp = new Bitmap(600, 1000, PixelFormat.Format24bppRgb);
+var bmp = new Bitmap(600, 900, PixelFormat.Format24bppRgb);
 Graphics g = Graphics.FromImage(bmp);
 g.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, bmp.Width, bmp.Height));
 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;

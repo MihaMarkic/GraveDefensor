@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace GraveDefensor.Shared.Extensions
+﻿namespace Microsoft.Xna.Framework
 {
     public static class VectorExtensions
     {

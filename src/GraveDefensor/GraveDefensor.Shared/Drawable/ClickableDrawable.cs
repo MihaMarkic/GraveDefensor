@@ -31,19 +31,19 @@ namespace GraveDefensor.Shared.Drawable
                 switch (ClickState)
                 {
                     case ClickState.None:
-                        if (context.MouseState.LeftButton == ButtonState.Pressed)
+                        if (context.LeftButton == ButtonState.Pressed)
                         {
-                            if (IsClickWithinBoundaries(context.MouseState))
+                            if (IsClickWithinBoundaries(context.CursorPosition.Value))
                             {
-                                ClickPosition = new Point(context.MouseState.X, context.MouseState.Y);
+                                ClickPosition = context.CursorPosition.Value;
                                 ClickState = ClickState.Pressed;
                             }
                         }
                         break;
                     case ClickState.Pressed:
-                        if (context.MouseState.LeftButton == ButtonState.Pressed)
+                        if (context.LeftButton == ButtonState.Pressed)
                         {
-                            if (ClickPosition != new Point(context.MouseState.X, context.MouseState.Y))
+                            if (ClickPosition != context.CursorPosition.Value)
                             {
                                 ClickState = ClickState.Moved;
                             }
@@ -57,7 +57,7 @@ namespace GraveDefensor.Shared.Drawable
                         ClickState = ClickState.None;
                         break;
                     case ClickState.Moved:
-                        if (context.MouseState.LeftButton == ButtonState.Released)
+                        if (context.LeftButton == ButtonState.Released)
                         {
                             ClickState = ClickState.None;
                         }
@@ -66,7 +66,7 @@ namespace GraveDefensor.Shared.Drawable
             }
             base.Update(context);
         }
-        public virtual bool IsClickWithinBoundaries(MouseState state) => false;
+        public virtual bool IsClickWithinBoundaries(Point state) => false;
     }
 
     public enum ClickState

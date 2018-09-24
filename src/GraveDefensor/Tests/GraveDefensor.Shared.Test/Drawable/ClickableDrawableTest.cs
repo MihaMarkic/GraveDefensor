@@ -1,4 +1,5 @@
-﻿using GraveDefensor.Shared.Drawable;
+﻿using GraveDefensor.Shared.Core;
+using GraveDefensor.Shared.Drawable;
 using GraveDefensor.Shared.Services.Implementation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -28,7 +29,9 @@ namespace GraveDefensor.Shared.Test.Drawable
             internal static UpdateContext GetUpdateContext(ButtonState buttonState, int x = 0, int y = 0) => 
                 new UpdateContext(new GameTime(),
                     new MouseState(x, y, default, leftButton: buttonState, default, default, default, default),
-                 default);
+                    new TouchState(),
+                    new Point(x, y),
+                    default);
 
             [SetUp]
             public new void SetUp()
@@ -139,10 +142,10 @@ namespace GraveDefensor.Shared.Test.Drawable
 
     public class MockClickableDrawable: ClickableDrawable
     {
-        public Func<MouseState, bool> OnIsClickWithinBoundaries;
+        public Func<Point, bool> OnIsClickWithinBoundaries;
 
         public void SetIsEnabled(bool isEnabled) => IsEnabled = isEnabled;
         public new void Init() => base.Init();
-        public override bool IsClickWithinBoundaries(MouseState state) => OnIsClickWithinBoundaries?.Invoke(state) ?? false;
+        public override bool IsClickWithinBoundaries(Point point) => OnIsClickWithinBoundaries?.Invoke(point) ?? false;
     }
 }

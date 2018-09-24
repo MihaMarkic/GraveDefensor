@@ -42,9 +42,9 @@ namespace GraveDefensor.Shared.Drawable
                     State = DialogState.Open;
                     break;
                 case DialogState.Open:
-                    if (context.MouseState.LeftButton == ButtonState.Pressed)
+                    if (context.LeftButton == ButtonState.Pressed)
                     {
-                        if (!WasPressedOutside && !ContentBounds.Contains(context.MouseState.AsPoint()))
+                        if (!WasPressedOutside && !ContentBounds.Contains(context.CursorPosition.Value))
                         {
                             WasPressedOutside = true;
                         }

@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\MathOps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\MovementPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scenes\BattleScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\Button.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\PickerButton.cs" />

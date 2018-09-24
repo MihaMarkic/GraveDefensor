@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
+using System.Diagnostics;
 
 namespace GraveDefensor.Shared
 {
@@ -23,6 +24,7 @@ namespace GraveDefensor.Shared
         DrawContext drawContext;
         GraveDefensorMaster master;
         MouseState lastMouseState;
+        int? lastTouchStateTrackingId;
 
         public GraveDefensorGame()
         {
@@ -103,18 +105,20 @@ namespace GraveDefensor.Shared
             if (ScreenInfo.Default.HasMouse)
             {
                 lastMouseState = Mouse.GetState();
-
                 if (graphics.GraphicsDevice.Viewport.Bounds.Contains(lastMouseState.X, lastMouseState.Y))
                 {
                     // Update our sprites position to the current cursor location
                     mousePosition.X = lastMouseState.X;
                     mousePosition.Y = lastMouseState.Y;
                 }
-                master.Update(new UpdateContext(gameTime, lastMouseState, Globals.ObjectPool));
+                master.Update(new UpdateContext(gameTime, lastMouseState, touchState: null, lastMouseState.AsPoint(), Globals.ObjectPool));
             }
             else
             {
-                master.Update(new UpdateContext(gameTime, new MouseState(), Globals.ObjectPool));
+                var touchCollection = TouchPanel.GetState();
+                var touchState = new TouchState(touchCollection, lastTouchStateTrackingId);
+                master.Update(new UpdateContext(gameTime, mouseState: null, touchState, touchState.Position, Globals.ObjectPool));
+                lastTouchStateTrackingId = touchState.TrackingId;
             }
             base.Update(gameTime);
         }

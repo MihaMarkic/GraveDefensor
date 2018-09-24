@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BaseTest`1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\MathOpsTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\PathTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\TouchStateTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\ClickableDrawableTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Dialogs\DialogTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyTest.cs" />

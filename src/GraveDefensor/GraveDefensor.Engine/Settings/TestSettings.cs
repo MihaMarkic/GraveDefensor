@@ -24,7 +24,7 @@
                         AirCapability = true,
                         GroundCapability = true,
                         CenterOffsetX = 9,
-                        ReloadTime = 200,
+                        ReloadTime = 100,
                         FiringTime = 5,
                     },
                     Vulcan = new Vulcan

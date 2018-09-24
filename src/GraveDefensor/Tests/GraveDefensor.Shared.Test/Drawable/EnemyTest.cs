@@ -122,7 +122,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             [DebuggerStepThrough]
             public static UpdateContext CreateUpdateContext(int elapsed)
             {
-                return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, null);
+                return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, default, default, null);
             }
             
             [Test]
@@ -246,7 +246,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             [DebuggerStepThrough]
             public static UpdateContext CreateUpdateContext(int elapsed)
             {
-                return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, null);
+                return new UpdateContext(new GameTime(default, TimeSpan.FromMilliseconds(elapsed)), default, default, default, null);
             }
             [Test]
             public void WhenHalfDoneFirstSegment_ReturnsCorrectValue()
