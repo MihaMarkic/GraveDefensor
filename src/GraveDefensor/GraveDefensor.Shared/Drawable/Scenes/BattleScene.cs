@@ -95,42 +95,26 @@ namespace GraveDefensor.Shared.Drawable.Scenes
             switch (Status)
             {
                 case BattleSceneStatus.Active:
-                    // converts mouse coordinates to absolute to scene
                     var childContext = OffsetUpdateContext(context);
-                    foreach (var wp in WeaponPods)
+                    var clickedWeaponPod = UpdateWeaponPods(childContext, WeaponPods, CurrentWave, CanEntityClick);
+                    if (clickedWeaponPod != null)
                     {
-                        wp.Update(childContext, CurrentWave);
-                        // disable upgrades for now
-                        if (CanEntityClick && wp.ClickState == ClickState.Clicked && wp.Weapon is null)
-                        {
-                            logger.Info($"Weapon pod {Array.IndexOf(WeaponPods, wp)} was clicked");
-                            WeaponPickerDialog = CreateWeaponPickerDialog(childContext.ObjectPool, wp);
-                        }
+                        WeaponPickerDialog = CreateWeaponPickerDialog(childContext.ObjectPool, clickedWeaponPod);
                     }
-                    foreach (var wave in Waves)
+                    var updateEnemyWavesResult = UpdateEnemyWaves(childContext, currentWaveIndex, CurrentWave, Waves);
+                    if (updateEnemyWavesResult.NewStatus.HasValue)
                     {
-                        wave.Update(childContext);
-                        if (CurrentWave.Status == EnemyWaveStatus.Done)
-                        {
-                            if (currentWaveIndex < Waves.Length - 1)
-                            {
-                                currentWaveIndex++;
-                            }
-                            else
-                            {
-                                Status = BattleSceneStatus.Finishing;
-                            }
-                        }
+                        Status = updateEnemyWavesResult.NewStatus.Value;
                     }
-                    var activeDialog = ActiveDialog;
-                    if (activeDialog != null)
+                    if (updateEnemyWavesResult.IsNextWave)
                     {
-                        activeDialog.Update(childContext, Amount);
-                        if (activeDialog.State == DialogState.Closing)
-                        {
-                            context.ObjectPool.ReleaseObject(activeDialog);
-                            WeaponPickerDialog = null;
-                        }
+                        Debug.Assert(currentWaveIndex < Waves.Length - 1);
+                        currentWaveIndex++;
+                    }
+                    bool resetWeaponPickerDialog = UpdateActiveDialog(context, childContext, Amount, ActiveDialog);
+                    if (resetWeaponPickerDialog)
+                    {
+                        WeaponPickerDialog = null;
                     }
                     break;
                 case BattleSceneStatus.Finishing:
@@ -139,7 +123,80 @@ namespace GraveDefensor.Shared.Drawable.Scenes
             }
             base.Update(context);
         }
-        internal WeaponPickerDialog CreateWeaponPickerDialog(IObjectPool pool, WeaponPod pod)
+        /// <summary>
+        /// Updates weapon pods and returns a clicked weapon pod if any.
+        /// Caller is responsible for process click - i.e. create <see cref="WeaponPickerDialog"/>.
+        /// </summary>
+        /// <param name="childContext"></param>
+        /// <param name="weaponPods"></param>
+        /// <param name="currentEnemyWave"></param>
+        /// <param name="canEntityClick"></param>
+        /// <returns></returns>
+        public static IWeaponPod UpdateWeaponPods(UpdateContext childContext, IWeaponPod[] weaponPods, IEnemyWave currentEnemyWave, bool canEntityClick)
+        {
+            IWeaponPod clickedWeaponPod = null;
+            // converts mouse coordinates to absolute to scene
+            foreach (var wp in weaponPods)
+            {
+                wp.Update(childContext, currentEnemyWave);
+                // disable upgrades for now
+                if (canEntityClick && wp.ClickState == ClickState.Clicked && wp.Weapon is null)
+                {
+                    logger.Info($"Weapon pod {Array.IndexOf(weaponPods, wp)} was clicked");
+                    clickedWeaponPod = wp;
+                }
+            }
+            return clickedWeaponPod;
+        }
+        public static (BattleSceneStatus? NewStatus, bool IsNextWave) UpdateEnemyWaves(
+            UpdateContext childContext, int currentWaveIndex, IEnemyWave currentEnemyWave, IEnemyWave[] enemyWaves)
+        {
+            var result = (NewStatus: (BattleSceneStatus?)null, IsNextWave: false);
+            foreach (var wave in enemyWaves)
+            {
+                wave.Update(childContext);
+            }
+            if (currentEnemyWave.Status == EnemyWaveStatus.Done)
+            {
+                if (currentWaveIndex < enemyWaves.Length - 1)
+                {
+                    result.IsNextWave = true;
+                }
+                else
+                {
+                    result.NewStatus = BattleSceneStatus.Finishing;
+                }
+            }
+            return result;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="childContext"></param>
+        /// <param name="weaponPods"></param>
+        /// <param name="currentWaveIndex"></param>
+        /// <param name="currentEnemyWave"></param>
+        /// <param name="enemyWaves"></param>
+        /// <param name="canEntityClick"></param>
+        /// <param name="amount"></param>
+        /// <param name="activeDialog"></param>
+        /// <returns>True when <see cref="WeaponPickerDialog"/> has to be set to null, false otherwise.</returns>
+        public static bool UpdateActiveDialog(UpdateContext context, UpdateContext childContext, int amount, Dialog activeDialog)
+        {
+            bool resetWeaponPickerDialog = false;
+            if (activeDialog != null)
+            {
+                activeDialog.Update(childContext, amount);
+                if (activeDialog.State == DialogState.Closing)
+                {
+                    context.ObjectPool.ReleaseObject(activeDialog);
+                    resetWeaponPickerDialog = true;
+                }
+            }
+            return resetWeaponPickerDialog;
+        }
+        internal WeaponPickerDialog CreateWeaponPickerDialog(IObjectPool pool, IWeaponPod pod)
         {
             Debug.Assert(ActiveDialog is null);
             var dialog = pool.GetObject<WeaponPickerDialog>();

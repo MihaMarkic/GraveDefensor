@@ -26,7 +26,7 @@ namespace GraveDefensor.Shared.Drawable.Weapons
             CenterOffset = new Vector2(Settings.CenterOffsetX ?? weapon.Width / 2, Settings.CenterOffsetY ?? weapon.Height / 2);
             Size = weapon.Bounds.Size;
         }
-        public override void Update(UpdateContext context, EnemyWave wave)
+        public override void Update(UpdateContext context, IEnemyWave wave)
         {
             base.Update(context, wave);
             var result = GetEnemyMostNearTheEndAndInTrackingRange(Center, wave.Sets, Settings.TrackingRange, Settings.FiringRange);

@@ -5,12 +5,18 @@ using GraveDefensor.Shared.Services.Implementation;
 using GraveDefensor.Windows.Actions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public class WeaponPod: ClickableDrawable
+    public interface IWeaponPod: IClickableDrawable
+    {
+        Vector2 Center { get; }
+        Rectangle Bounds { get; }
+        IWeapon Weapon { get; set; }
+        void Update(UpdateContext context, IEnemyWave enemyWave);
+    }
+    public class WeaponPod: ClickableDrawable, IWeaponPod
     {
         Texture2D texture;
         public Vector2 Center { get; private set; }
@@ -39,7 +45,7 @@ namespace GraveDefensor.Shared.Drawable
             MouseHoverColorTransition = Globals.ObjectPool.GetObject<ColorTransitionAction>().WithStartColor(Color.White);
             base.InitContent(context);
         }
-        public void Update(UpdateContext context, EnemyWave enemyWave)
+        public void Update(UpdateContext context, IEnemyWave enemyWave)
         {
             UpdateMouseHover(context);
             Weapon?.Update(context, enemyWave);

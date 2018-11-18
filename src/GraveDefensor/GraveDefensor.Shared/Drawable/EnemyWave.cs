@@ -1,4 +1,5 @@
 ﻿using GraveDefensor.Shared.Service.Abstract;
+using GraveDefensor.Shared.Services.Implementation;
 using NLog;
 using System;
 using System.Linq;
@@ -6,7 +7,12 @@ using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public class EnemyWave: Drawable
+    public interface IEnemyWave: IDrawable
+    {
+        EnemyWaveStatus Status { get; }
+        EnemySet[] Sets { get; }
+    }
+    public class EnemyWave: Drawable, IEnemyWave
     {
         static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         IInitContext initContext;
@@ -30,6 +36,30 @@ namespace GraveDefensor.Shared.Drawable
                 Sets[i] = set;
             }
             Status = EnemyWaveStatus.Ready;
+        }
+        public override void InitContent(IInitContentContext context)
+        {
+            foreach (var enemySet in Sets)
+            {
+                enemySet.InitContent(context);
+            }
+            base.InitContent(context);
+        }
+        public override void Update(UpdateContext context)
+        {
+            foreach (var enemySet in Sets)
+            {
+                enemySet.Update(context);
+            }
+            base.Update(context);
+        }
+        public override void Draw(IDrawContext context)
+        {
+            foreach (var enemySet in Sets)
+            {
+                enemySet.Draw(context);
+            }
+            base.Draw(context);
         }
     }
 

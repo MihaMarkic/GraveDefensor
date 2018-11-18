@@ -12,13 +12,13 @@ namespace GraveDefensor.Shared.Drawable
     public class WeaponPickerDialog : Dialog
     {
         public const int HorizontalPadding = 5;
-        public WeaponPod Pod { get; private set; }
+        public IWeaponPod Pod { get; private set; }
         Settings.Weapon[] weaponSettings;
         public WeaponPickerButton[] Buttons { get; private set; }
         IInitContext initContext;
         IInitContentContext initContentContext;
 
-        public void Init(IInitContext initContext, WeaponPod pod, Settings.Weapon[] weaponSettings)
+        public void Init(IInitContext initContext, IWeaponPod pod, Settings.Weapon[] weaponSettings)
         {
             const int width = 200;
             const int headerHeight = 30;

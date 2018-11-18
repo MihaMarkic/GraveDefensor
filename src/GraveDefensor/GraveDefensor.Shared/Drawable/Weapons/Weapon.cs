@@ -42,7 +42,7 @@ namespace GraveDefensor.Shared.Drawable.Weapons
             TimeToNextFiringState = TimeSpan.FromMilliseconds(Settings.ReloadTime);
             FiringState = FiringState.Reloading;
         }
-        public virtual void Update(UpdateContext context, EnemyWave waves)
+        public virtual void Update(UpdateContext context, IEnemyWave waves)
         {
             switch (FiringState)
             {
