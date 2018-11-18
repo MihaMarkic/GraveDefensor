@@ -13,7 +13,7 @@ namespace GraveDefensor.Shared.Drawable.Weapons
         {
             base.Init(context, settings, center);
         }
-        public override void Update(UpdateContext context, EnemyWave[] waves)
+        public override void Update(UpdateContext context, EnemyWave waves)
         {
             base.Update(context, waves);
         }

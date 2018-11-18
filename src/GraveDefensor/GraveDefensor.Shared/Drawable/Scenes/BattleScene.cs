@@ -18,6 +18,8 @@ namespace GraveDefensor.Shared.Drawable.Scenes
         static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public WeaponPod[] WeaponPods { get; private set; }
         public EnemyWave[] Waves { get; private set; }
+        int currentWaveIndex = 0;
+        public EnemyWave CurrentWave => Waves[currentWaveIndex];
         Settings.Battle settings;
         Settings.Weapon[] weaponsSettings;
         public int Health { get; private set; }
@@ -32,6 +34,7 @@ namespace GraveDefensor.Shared.Drawable.Scenes
         IInitContext initContext;
         IInitContentContext initContentContext;
         public Dialog ActiveDialog => WeaponPickerDialog;
+        public BattleSceneStatus Status { get; private set; }
         public void Init(IInitContext context, Settings.Battle settings, Settings.Enemies enemiesSettings, Settings.Weapon[] weaponsSettings, Settings.Size windowSize)
         {
             base.Init(new Point(windowSize.Width, windowSize.Height));
@@ -53,12 +56,11 @@ namespace GraveDefensor.Shared.Drawable.Scenes
             {
                 var setting = settings.Waves[i];
                 var wave = context.ObjectPool.GetObject<EnemyWave>();
-                var enemySettings = enemiesSettings.GetEnemyById(setting.EnemyId);
-                var pathSettings = settings.Paths.Single(p => string.Equals(p.Id, setting.PathId, StringComparison.Ordinal));
-                wave.Init(context, setting, enemySettings, pathSettings);
+                wave.Init(context, setting, enemiesSettings, settings.Paths);
                 Waves[i] = wave;
             }
             changeStatusSubscription = context.Dispatcher.Subscribe<ChangeStatusMessage>(OnChangeStatus);
+            Status = BattleSceneStatus.Active;
         }
         protected override bool CanScroll() => ActiveDialog is null;
         internal void OnChangeStatus(object key, ChangeStatusMessage message)
@@ -90,31 +92,50 @@ namespace GraveDefensor.Shared.Drawable.Scenes
         internal bool CanEntityClick => !IsScrolling && WeaponPickerDialog == null;
         public override void Update(UpdateContext context)
         {
-            // converts mouse coordinates to absolute to scene
-            var childContext = OffsetUpdateContext(context);
-            foreach (var wp in WeaponPods)
+            switch (Status)
             {
-                wp.Update(childContext, Waves);
-                // disable upgrades for now
-                if (CanEntityClick && wp.ClickState == ClickState.Clicked && wp.Weapon is null)
-                {
-                    logger.Info($"Weapon pod {Array.IndexOf(WeaponPods, wp)} was clicked");
-                    WeaponPickerDialog = CreateWeaponPickerDialog(childContext.ObjectPool, wp);
-                }
-            }
-            foreach (var wave in Waves)
-            {
-                wave.Update(childContext);
-            }
-            var activeDialog = ActiveDialog;
-            if (activeDialog != null)
-            {
-                activeDialog.Update(childContext, Amount);
-                if (activeDialog.State == DialogState.Closing)
-                {
-                    context.ObjectPool.ReleaseObject(activeDialog);
-                    WeaponPickerDialog = null;
-                }
+                case BattleSceneStatus.Active:
+                    // converts mouse coordinates to absolute to scene
+                    var childContext = OffsetUpdateContext(context);
+                    foreach (var wp in WeaponPods)
+                    {
+                        wp.Update(childContext, CurrentWave);
+                        // disable upgrades for now
+                        if (CanEntityClick && wp.ClickState == ClickState.Clicked && wp.Weapon is null)
+                        {
+                            logger.Info($"Weapon pod {Array.IndexOf(WeaponPods, wp)} was clicked");
+                            WeaponPickerDialog = CreateWeaponPickerDialog(childContext.ObjectPool, wp);
+                        }
+                    }
+                    foreach (var wave in Waves)
+                    {
+                        wave.Update(childContext);
+                        if (CurrentWave.Status == EnemyWaveStatus.Done)
+                        {
+                            if (currentWaveIndex < Waves.Length - 1)
+                            {
+                                currentWaveIndex++;
+                            }
+                            else
+                            {
+                                Status = BattleSceneStatus.Finishing;
+                            }
+                        }
+                    }
+                    var activeDialog = ActiveDialog;
+                    if (activeDialog != null)
+                    {
+                        activeDialog.Update(childContext, Amount);
+                        if (activeDialog.State == DialogState.Closing)
+                        {
+                            context.ObjectPool.ReleaseObject(activeDialog);
+                            WeaponPickerDialog = null;
+                        }
+                    }
+                    break;
+                case BattleSceneStatus.Finishing:
+                    Status = BattleSceneStatus.Finished;
+                    break;
             }
             base.Update(context);
         }
@@ -203,5 +224,16 @@ namespace GraveDefensor.Shared.Drawable.Scenes
             changeStatusSubscription.Dispose();
             base.ReleaseResources(objectPool);
         }
+    }
+
+    public enum BattleSceneStatus
+    {
+        Ready,
+        Active,
+        /// <summary>
+        /// Transition to <see cref="Finish"/>.
+        /// </summary>
+        Finishing,
+        Finished
     }
 }

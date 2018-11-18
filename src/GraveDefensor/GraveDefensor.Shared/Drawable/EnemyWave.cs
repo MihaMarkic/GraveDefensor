@@ -1,145 +1,35 @@
-﻿using GraveDefensor.Engine.Services.Abstract;
-using GraveDefensor.Shared.Core;
-using GraveDefensor.Shared.Drawable.Enemies;
-using GraveDefensor.Shared.Service.Abstract;
-using GraveDefensor.Shared.Services.Implementation;
+﻿using GraveDefensor.Shared.Service.Abstract;
 using NLog;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Drawable
 {
-    public interface IEnemyWave
-    {
-        IReadOnlyList<Enemy> Enemies { get; }
-        EnemyWaveStatus Status { get; }
-    }
-    public class EnemyWave: Drawable, IEnemyWave
+    public class EnemyWave: Drawable
     {
         static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         IInitContext initContext;
         Settings.EnemyWave settings;
-        public Path Path { get; private set; }
-        Settings.Enemy enemySettings;
-        List<Enemy> enemies;
-        List<Enemy> completedEnemies;
-        Enemy enemyTemplate;
-        internal TimeSpan Relative { get; private set; }
-        internal TimeSpan RelativeSpawnTime { get; private set; }
-        public IReadOnlyList<Enemy> Enemies => enemies;
-        public IReadOnlyList<Enemy> CompletedEnemies => completedEnemies;
+        public EnemySet[] Sets { get; private set; }
         public EnemyWaveStatus Status { get; private set; }
-        public void Init(IInitContext context, Settings.EnemyWave settings, Settings.Enemy enemySettings, Settings.Path pathSettings)
+        public void Init(IInitContext context, Settings.EnemyWave settings, Settings.Enemies enemiesSettings, Settings.Path[] pathsSettings)
         {
             initContext = context;
             this.settings = settings;
-            Path = context.ObjectPool.GetObject<Path>();
-            Path.Init(pathSettings);
-            this.enemySettings = enemySettings;
-            enemies = context.ObjectPool.GetObject<List<Enemy>>();
-            completedEnemies = context.ObjectPool.GetObject<List<Enemy>>();
-            enemyTemplate = EnemyFactory.GetEnemyFromPool(context.ObjectPool, enemySettings);
             logger.Info($"Wave {settings.Id} init");
-            Relative = TimeSpan.FromMilliseconds(settings.StartTimeOffset);
+            //Relative = TimeSpan.FromMilliseconds(settings.StartTimeOffset);
+            Sets = new EnemySet[settings.Sets.Length];
+            for (int i = 0; i < settings.Sets.Length; i++)
+            {
+                var setting = settings.Sets[i];
+                var set = context.ObjectPool.GetObject<EnemySet>();
+                var enemySettings = enemiesSettings.GetEnemyById(setting.EnemyId);
+                var pathSettings = pathsSettings.Single(p => string.Equals(p.Id, setting.PathId, StringComparison.Ordinal));
+                set.Init(context, setting, enemySettings, pathSettings);
+                Sets[i] = set;
+            }
             Status = EnemyWaveStatus.Ready;
-        }
-        public override void InitContent(IInitContentContext context)
-        {
-            enemyTemplate.InitContent(context);
-            base.InitContent(context);
-        }
-        public override void Update(UpdateContext context)
-        {
-            switch (Status)
-            {
-                case EnemyWaveStatus.Ready:
-                    Relative -= context.GameTime.ElapsedGameTime;
-                    if (Relative < TimeSpan.Zero)
-                    {
-                        TransitionToSpawning(context);
-                    }
-                    break;
-                case EnemyWaveStatus.Spawning:
-                    if (enemies.Count + completedEnemies.Count == settings.EnemiesCount)
-                    {
-                        TransitionToWaitingForFinish();
-                    }
-                    else
-                    {
-                        RelativeSpawnTime -= context.GameTime.ElapsedGameTime;
-                        double milliseconds = RelativeSpawnTime.TotalMilliseconds;
-                        if (milliseconds < 0)
-                        {
-                            RelativeSpawnTime = TimeSpan.FromMilliseconds(settings.Interval + milliseconds);
-                            SpawnEnemy(context);
-                        }
-                    }
-                    break;
-                case EnemyWaveStatus.WaitingForFinish:
-                    if (enemies.Count == 0)
-                    {
-                        TransitionToDone();
-                    }
-                    break;
-            }
-            UpdateEnemies(context);
-            base.Update(context);
-        }
-
-        internal void UpdateEnemies(UpdateContext context)
-        {
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                var enemy = enemies[i];
-                enemy.Update(context);
-                if (enemy.IsDone)
-                {
-                    enemies.RemoveAt(i);
-                    completedEnemies.Add(enemy);
-                }
-            }
-        }
-
-        internal void TransitionToSpawning(UpdateContext context)
-        {
-            RelativeSpawnTime = TimeSpan.FromMilliseconds(settings.Interval) + Relative;
-            SpawnEnemy(context);
-            Status = EnemyWaveStatus.Spawning;
-            logger.Info($"Wave {settings.Id} become active");
-        }
-        internal void TransitionToWaitingForFinish()
-        {
-            Status = EnemyWaveStatus.WaitingForFinish;
-        }
-        internal void TransitionToDone()
-        {
-            Status = EnemyWaveStatus.Done;
-        }
-        public override void Draw(IDrawContext context)
-        {
-            foreach (var enemy in enemies)
-            {
-                enemy.Draw(context);
-            }
-            base.Draw(context);
-        }
-        public void SpawnEnemy(UpdateContext context)
-        {
-            var enemy = EnemyFactory.GetEnemyFromPool(context.ObjectPool, enemySettings);
-            enemy.Init(initContext, enemySettings, Path);
-            enemy.CopyContentFrom(enemyTemplate);
-            enemy.Start();
-            enemies.Add(enemy);
-            logger.Info($"Enemy spawned for wave {settings.Id}");
-        }
-        public override void ReleaseResources(IObjectPool objectPool)
-        {
-            objectPool.ReleaseObjects(enemies);
-            objectPool.ReleaseObjects(completedEnemies);
-            objectPool.ReleaseObject(enemyTemplate);
-            objectPool.ReleaseObject(Path);
-            base.ReleaseResources(objectPool);
         }
     }
 

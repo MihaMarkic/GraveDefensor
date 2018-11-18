@@ -42,7 +42,7 @@ namespace GraveDefensor.Shared.Drawable.Weapons
             TimeToNextFiringState = TimeSpan.FromMilliseconds(Settings.ReloadTime);
             FiringState = FiringState.Reloading;
         }
-        public virtual void Update(UpdateContext context, EnemyWave[] waves)
+        public virtual void Update(UpdateContext context, EnemyWave waves)
         {
             switch (FiringState)
             {
@@ -93,12 +93,12 @@ namespace GraveDefensor.Shared.Drawable.Weapons
                     break;
             }
         }
-        internal static void GetEnemiesInRange(Vector2 center, IEnemyWave[] waves, double trackingRange, double firingRange,
+        internal static void GetEnemiesInRange(Vector2 center, IEnemySet[] waves, double trackingRange, double firingRange,
             IList<Enemy> enemiesInTrackingRange, IList<Enemy> enemiesInFiringRange)
         {
             foreach (var wave in waves)
             {
-                if (wave.Status == EnemyWaveStatus.Spawning || wave.Status == EnemyWaveStatus.WaitingForFinish)
+                if (wave.Status == EnemySetStatus.Spawning || wave.Status == EnemySetStatus.WaitingForFinish)
                 {
                     foreach (var enemy in wave.Enemies)
                     {
@@ -116,14 +116,14 @@ namespace GraveDefensor.Shared.Drawable.Weapons
             }
         }
 
-        internal static (Enemy Enemy, bool IsInFiringRange)? GetEnemyMostNearTheEndAndInTrackingRange(Vector2 center, IEnemyWave[] waves, double trackingRange, double firingRange)
+        internal static (Enemy Enemy, bool IsInFiringRange)? GetEnemyMostNearTheEndAndInTrackingRange(Vector2 center, IEnemySet[] enemySets, double trackingRange, double firingRange)
         {
             (Enemy Enemy, bool IsInFiringRange)? result = null;
-            foreach (var wave in waves)
+            foreach (var enemySet in enemySets)
             {
-                if (wave.Status == EnemyWaveStatus.Spawning || wave.Status == EnemyWaveStatus.WaitingForFinish)
+                if (enemySet.Status == EnemySetStatus.Spawning || enemySet.Status == EnemySetStatus.WaitingForFinish)
                 {
-                    foreach (var enemy in wave.Enemies)
+                    foreach (var enemy in enemySet.Enemies)
                     {
                         if (enemy.IsTarget)
                         {

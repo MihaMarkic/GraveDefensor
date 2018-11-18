@@ -21,11 +21,11 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
                 var enemiesInTrackingRange = new List<Enemy>();
                 var enemiesInFiringRange = new List<Enemy>();
 
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 wave1.Enemies.Returns(new List<Enemy>());
 
-                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemyWave[] { wave1 }, 12, 17, enemiesInTrackingRange, enemiesInFiringRange);
+                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemySet[] { wave1 }, 12, 17, enemiesInTrackingRange, enemiesInFiringRange);
 
                 Assert.That(enemiesInTrackingRange.Count, Is.Zero);
                 Assert.That(enemiesInFiringRange.Count, Is.Zero);
@@ -36,11 +36,11 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
                 var enemiesInTrackingRange = new List<Enemy>();
                 var enemiesInFiringRange = new List<Enemy>();
 
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(30, 0) });
 
-                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemyWave[] { wave1 }, 12, 17, enemiesInTrackingRange, enemiesInFiringRange);
+                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemySet[] { wave1 }, 12, 17, enemiesInTrackingRange, enemiesInFiringRange);
 
                 Assert.That(enemiesInTrackingRange.Count, Is.Zero);
                 Assert.That(enemiesInFiringRange.Count, Is.Zero);
@@ -51,11 +51,11 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
                 var enemiesInTrackingRange = new List<Enemy>();
                 var enemiesInFiringRange = new List<Enemy>();
 
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(15, 0) });
 
-                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemyWave[] { wave1 }, 17, 12, enemiesInTrackingRange, enemiesInFiringRange);
+                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemySet[] { wave1 }, 17, 12, enemiesInTrackingRange, enemiesInFiringRange);
 
                 Assert.That(enemiesInTrackingRange.Count, Is.EqualTo(1));
                 Assert.That(enemiesInFiringRange.Count, Is.Zero);
@@ -66,11 +66,11 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
                 var enemiesInTrackingRange = new List<Enemy>();
                 var enemiesInFiringRange = new List<Enemy>();
 
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(10, 0) });
 
-                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemyWave[] { wave1 }, 17, 12, enemiesInTrackingRange, enemiesInFiringRange);
+                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemySet[] { wave1 }, 17, 12, enemiesInTrackingRange, enemiesInFiringRange);
 
                 Assert.That(enemiesInTrackingRange.Count, Is.EqualTo(1));
                 Assert.That(enemiesInFiringRange.Count, Is.EqualTo(1));
@@ -81,11 +81,11 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
                 var enemiesInTrackingRange = new List<Enemy>();
                 var enemiesInFiringRange = new List<Enemy>();
 
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(10, 0), new MockEnemy(15, 0) });
 
-                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemyWave[] { wave1 }, 17, 12, enemiesInTrackingRange, enemiesInFiringRange);
+                Weapon<MockWeaponSettings>.GetEnemiesInRange(new Vector2(0, 0), new IEnemySet[] { wave1 }, 17, 12, enemiesInTrackingRange, enemiesInFiringRange);
 
                 Assert.That(enemiesInTrackingRange.Count, Is.EqualTo(2));
                 Assert.That(enemiesInFiringRange.Count, Is.EqualTo(1));
@@ -97,74 +97,74 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
             [Test]
             public void WhenNoEnemies_NullIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
-                wave1.Enemies.Returns(new List<Enemy> ());
+                var enemySet = Substitute.For<IEnemySet>();
+                enemySet.Status.Returns(EnemySetStatus.Spawning);
+                enemySet.Enemies.Returns(new List<Enemy> ());
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { enemySet }, 17, 12);
 
                 Assert.That(actual.HasValue, Is.False);
             }
             [Test]
             public void WhenSingleEnemyOutOfTrackingRange_NullIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
-                wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(30, 0) });
+                var enemySet = Substitute.For<IEnemySet>();
+                enemySet.Status.Returns(EnemySetStatus.Spawning);
+                enemySet.Enemies.Returns(new List<Enemy> { new MockEnemy(30, 0) });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { enemySet }, 17, 12);
 
                 Assert.That(actual.HasValue, Is.False);
             }
             [Test]
             public void WhenSingleEnemyInTrackingButNotFiringRange_EnemyIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
-                wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(15, 0) });
+                var enemySet = Substitute.For<IEnemySet>();
+                enemySet.Status.Returns(EnemySetStatus.Spawning);
+                enemySet.Enemies.Returns(new List<Enemy> { new MockEnemy(15, 0) });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { enemySet }, 17, 12);
 
                 Assert.That(actual.Value.Enemy, Is.Not.Null);
             }
             [Test]
             public void WhenSingleEnemyInTrackingButNotFiringRange_NotInFiringRangeIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
-                wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(15, 0) });
+                var enemySet = Substitute.For<IEnemySet>();
+                enemySet.Status.Returns(EnemySetStatus.Spawning);
+                enemySet.Enemies.Returns(new List<Enemy> { new MockEnemy(15, 0) });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { enemySet }, 17, 12);
 
                 Assert.That(actual.Value.IsInFiringRange, Is.False);
             }
             [Test]
             public void WhenSingleEnemyInFiringRange_EnemyIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
-                wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(10, 0) });
+                var enemySet = Substitute.For<IEnemySet>();
+                enemySet.Status.Returns(EnemySetStatus.Spawning);
+                enemySet.Enemies.Returns(new List<Enemy> { new MockEnemy(10, 0) });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { enemySet }, 17, 12);
 
                 Assert.That(actual.Value.Enemy, Is.Not.Null);
             }
             [Test]
             public void WhenSingleEnemyInFiringRange_InFiringRangeIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
-                wave1.Enemies.Returns(new List<Enemy> { new MockEnemy(10, 0) });
+                var enemySet = Substitute.For<IEnemySet>();
+                enemySet.Status.Returns(EnemySetStatus.Spawning);
+                enemySet.Enemies.Returns(new List<Enemy> { new MockEnemy(10, 0) });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { enemySet }, 17, 12);
 
                 Assert.That(actual.Value.IsInFiringRange, Is.True);
             }
             [Test]
             public void WhenTwoEnemiesInTrackingRange_NearestToEndIsReturned()
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 MockEnemy first = new MockEnemy(10, 0, 100);
                 MockEnemy second = new MockEnemy(15, 0, 50);
                 wave1.Enemies.Returns(new List<Enemy> {
@@ -172,7 +172,7 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
                     second
                 });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { wave1 }, 17, 12);
             
                 Assert.That(actual.Value.Enemy, Is.SameAs(second));
             }
@@ -181,20 +181,20 @@ namespace GraveDefensor.Shared.Test.Drawable.Weapons
             [TestCase(EnemyStatus.Killed)]
             public void WhenEnemyIsNotLive_NullIsReturned(EnemyStatus enemyStatus)
             {
-                var wave1 = Substitute.For<IEnemyWave>();
-                wave1.Status.Returns(EnemyWaveStatus.Spawning);
+                var wave1 = Substitute.For<IEnemySet>();
+                wave1.Status.Returns(EnemySetStatus.Spawning);
                 MockEnemy first = new MockEnemy(10, 0, 100, enemyStatus);
                 wave1.Enemies.Returns(new List<Enemy> {
                     first
                 });
 
-                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemyWave[] { wave1 }, 17, 12);
+                var actual = Weapon<MockWeaponSettings>.GetEnemyMostNearTheEndAndInTrackingRange(Vector2.Zero, new IEnemySet[] { wave1 }, 17, 12);
 
                 Assert.That(actual.HasValue, Is.False);
             }
         }
     }
-    public class MockEnemyWave: EnemyWave
+    public class MockEnemySet: EnemySet
     {
 
     }

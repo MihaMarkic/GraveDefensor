@@ -7,6 +7,6 @@ namespace GraveDefensor.Shared.Drawable.Weapons
     public interface IWeapon : IClickableDrawable
     {
         Vector2 Center { get; }
-        void Update(UpdateContext context, EnemyWave[] enemyWaves);
+        void Update(UpdateContext context, EnemyWave enemyWave);
     }
 }

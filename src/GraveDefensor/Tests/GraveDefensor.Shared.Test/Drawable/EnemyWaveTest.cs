@@ -14,7 +14,7 @@ using Settings = GraveDefensor.Engine.Settings;
 
 namespace GraveDefensor.Shared.Test.Drawable
 {
-    public class EnemyWaveTest: BaseTest<EnemyWave>
+    public class EnemySetTest: BaseTest<EnemySet>
     {
         [DebuggerStepThrough]
         protected IInitContext GetContext()
@@ -46,12 +46,12 @@ namespace GraveDefensor.Shared.Test.Drawable
             }
         };
         [TestFixture]
-        public class Init: EnemyWaveTest
+        public class Init: EnemySetTest
         {
             [Test]
             public void AfterInit_EnemiesCountIsZero()
             {
-                Target.Init(GetContext(), new Settings.EnemyWave
+                Target.Init(GetContext(), new Settings.EnemySet
                 {
                     EnemyId = nameof(Settings.CreepyWorm)
                 }, new Settings.CreepyWorm(), GetPath());
@@ -61,7 +61,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             [Test]
             public void AfterInit_CompletedEnemiesCountIsZero()
             {
-                Target.Init(GetContext(), new Settings.EnemyWave
+                Target.Init(GetContext(), new Settings.EnemySet
                 {
                     EnemyId = nameof(Settings.CreepyWorm)
                 }, new Settings.CreepyWorm(), GetPath());
@@ -70,12 +70,12 @@ namespace GraveDefensor.Shared.Test.Drawable
             }
         }
         [TestFixture]
-        public class Update: EnemyWaveTest
+        public class Update: EnemySetTest
         {
             [SetUp]
             public new void SetUp()
             {
-                Target.Init(GetContext(), new Settings.EnemyWave
+                Target.Init(GetContext(), new Settings.EnemySet
                 {
                     EnemyId = nameof(Settings.CreepyWorm),
                     StartTimeOffset = 100,
@@ -89,14 +89,14 @@ namespace GraveDefensor.Shared.Test.Drawable
             {
                 Target.Update(CreateUpdateContext(elapsed));
 
-                Assert.That(Target.Status, Is.EqualTo(EnemyWaveStatus.Ready));
+                Assert.That(Target.Status, Is.EqualTo(EnemySetStatus.Ready));
             }
             [Test]
             public void WhenSpawnTimeElapsedIsOverStartOffset_StatusIsSpawning()
             {
                 Target.Update(CreateUpdateContext(120));
 
-                Assert.That(Target.Status, Is.EqualTo(EnemyWaveStatus.Spawning));
+                Assert.That(Target.Status, Is.EqualTo(EnemySetStatus.Spawning));
             }
             [Test]
             public void WhenSpawnTimeElapsesForSecondEnemy_EnemiesCountIsTwo()
@@ -120,12 +120,12 @@ namespace GraveDefensor.Shared.Test.Drawable
                 Assert.That(Target.CompletedEnemies.Count, Is.EqualTo(1));
             }
         }
-        public class Transitions: EnemyWaveTest
+        public class Transitions: EnemySetTest
         {
             [SetUp]
             public new void SetUp()
             {
-                Target.Init(GetContext(), new Settings.EnemyWave
+                Target.Init(GetContext(), new Settings.EnemySet
                 {
                     EnemyId = nameof(Settings.CreepyWorm),
                     StartTimeOffset = 100,
@@ -142,7 +142,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             {
                 Target.TransitionToSpawning(CreateUpdateContext(10));
 
-                Assert.That(Target.Status, Is.EqualTo(EnemyWaveStatus.Spawning));
+                Assert.That(Target.Status, Is.EqualTo(EnemySetStatus.Spawning));
             }
             [Test]
             public void AfterCall_EnemiesCountIsOne()
@@ -170,7 +170,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             {
                 Target.TransitionToWaitingForFinish();
 
-                Assert.That(Target.Status, Is.EqualTo(EnemyWaveStatus.WaitingForFinish));
+                Assert.That(Target.Status, Is.EqualTo(EnemySetStatus.WaitingForFinish));
             }
         }
         [TestFixture]
@@ -181,7 +181,7 @@ namespace GraveDefensor.Shared.Test.Drawable
             {
                 Target.TransitionToDone();
 
-                Assert.That(Target.Status, Is.EqualTo(EnemyWaveStatus.Done));
+                Assert.That(Target.Status, Is.EqualTo(EnemySetStatus.Done));
             }
         }
     }

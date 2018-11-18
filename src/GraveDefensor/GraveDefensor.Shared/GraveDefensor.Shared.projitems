@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\MovementPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\TouchState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyWave.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Scenes\BattleScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\Button.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Buttons\PickerButton.cs" />
@@ -27,7 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\EnemyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\EnemyStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Enemies\Skeleton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemyWave.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawable\EnemySet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\GlobalContent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\GraveDefensorMaster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawable\Master.cs" />

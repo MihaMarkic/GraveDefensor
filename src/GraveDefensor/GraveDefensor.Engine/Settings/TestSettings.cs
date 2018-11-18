@@ -105,12 +105,18 @@
                 {
                     new EnemyWave
                     {
-                        Id = "First",
-                        PathId = "Core",
-                        EnemyId = "CreepyWorm",
-                        StartTimeOffset = 500,
-                        Interval = 4000,
-                        EnemiesCount = 10
+                        Sets = new EnemySet[]
+                        {
+                            new EnemySet
+                            {
+                                Id = "First",
+                                PathId = "Core",
+                                EnemyId = "CreepyWorm",
+                                StartTimeOffset = 500,
+                                Interval = 4000,
+                                EnemiesCount = 10
+                            }
+                        }
                     }
                 },
                 WeaponNames = new string[] { nameof(MiniGun), nameof(Vulcan) }

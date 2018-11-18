@@ -39,10 +39,10 @@ namespace GraveDefensor.Shared.Drawable
             MouseHoverColorTransition = Globals.ObjectPool.GetObject<ColorTransitionAction>().WithStartColor(Color.White);
             base.InitContent(context);
         }
-        public void Update(UpdateContext context, EnemyWave[] waves)
+        public void Update(UpdateContext context, EnemyWave enemyWave)
         {
             UpdateMouseHover(context);
-            Weapon?.Update(context, waves);
+            Weapon?.Update(context, enemyWave);
             base.Update(context);
         }
         public override bool IsClickWithinBoundaries(Point point)

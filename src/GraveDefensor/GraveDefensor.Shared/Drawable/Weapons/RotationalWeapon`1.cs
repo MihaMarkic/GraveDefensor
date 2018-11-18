@@ -9,7 +9,7 @@ using Settings = GraveDefensor.Engine.Settings;
 namespace GraveDefensor.Shared.Drawable.Weapons
 {
     public abstract class RotationalWeapon<T> : Weapon<T>
-    where T : Settings.RotationalWeapon
+        where T : Settings.RotationalWeapon
     {
         Texture2D weapon;
         public Vector2 CenterOffset { get; private set; }
@@ -26,10 +26,10 @@ namespace GraveDefensor.Shared.Drawable.Weapons
             CenterOffset = new Vector2(Settings.CenterOffsetX ?? weapon.Width / 2, Settings.CenterOffsetY ?? weapon.Height / 2);
             Size = weapon.Bounds.Size;
         }
-        public override void Update(UpdateContext context, EnemyWave[] waves)
+        public override void Update(UpdateContext context, EnemyWave wave)
         {
-            base.Update(context, waves);
-            var result = GetEnemyMostNearTheEndAndInTrackingRange(Center, waves, Settings.TrackingRange, Settings.FiringRange);
+            base.Update(context, wave);
+            var result = GetEnemyMostNearTheEndAndInTrackingRange(Center, wave.Sets, Settings.TrackingRange, Settings.FiringRange);
             if (result.HasValue)
             {
                 (var enemy, bool inFiringRange) = result.Value;

@@ -1,19 +1,15 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace GraveDefensor.Engine.Settings
 {
     [DebuggerDisplay("{Id,nq}")]
     public class EnemyWave
     {
-        public  string Id { get; set; }
-        public string PathId { get; set; }
-        public string EnemyId { get; set; }
-        public int StartTimeOffset { get; set; }
+        public string Id { get; set; }
         /// <summary>
-        /// Expressed in milliseconds
+        /// Time to start after previous wave finishes in milliseconds.
         /// </summary>
-        public int Interval { get; set; }
-        public int EnemiesCount { get; set; }
+        public int TimeOffsetToPrevious { get; set; }
+        public EnemySet[] Sets { get; set; }
     }
 }
