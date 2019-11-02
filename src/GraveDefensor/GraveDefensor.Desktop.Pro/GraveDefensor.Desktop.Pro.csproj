@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <MonoGameContentReference Include="..\Content\GraveDefensor.mgcb" Link="Content\GraveDefensor.mgcb" />
+    <MonoGameContentReference Include="..\..\..\..\Assets\GraveDefensor.mgcb" Link="Content\GraveDefensor.mgcb" />
   </ItemGroup>
 
   <Import Project="..\GraveDefensor.Shared\GraveDefensor.Shared.projitems" Label="Shared" />

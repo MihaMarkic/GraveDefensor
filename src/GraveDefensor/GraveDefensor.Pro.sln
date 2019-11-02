@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraveDefensor.Engine", "GraveDefensor.Engine\GraveDefensor.Engine.csproj", "{8133E054-C2E9-40A7-8ECD-B13D0558A118}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GraveDefensor.Shared", "GraveDefensor.Shared\GraveDefensor.Shared.shproj", "{5E3CE998-93D5-448C-AE98-CDF1EA9C1A6E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraveDefensor.Windows.Pro", "GraveDefensor.Windows.Pro\GraveDefensor.Windows.Pro.csproj", "{93716D89-E6FD-4CB3-B16B-98269631BB77}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EAC3916A-7EFA-4560-8E46-41D91C67FEB6}"
 EndProject
@@ -24,12 +22,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C97A671A-7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraveDefensor.Android.Pro", "GraveDefensor.Android.Pro\GraveDefensor.Android.Pro.csproj", "{E6FBD856-8911-4E86-97E4-2839BDF5CBBF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraveDefensor.Desktop.Pro", "GraveDefensor.Desktop.Pro\GraveDefensor.Desktop.Pro.csproj", "{71B2B92E-C705-49E4-B2E1-9B11894D17E7}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		GraveDefensor.Shared\GraveDefensor.Shared.projitems*{17e3a066-537b-4280-a205-36c86b67fa8f}*SharedItemsImports = 4
 		Tests\GraveDefensor.Shared.Test\GraveDefensor.Shared.Test.projitems*{17e3a066-537b-4280-a205-36c86b67fa8f}*SharedItemsImports = 4
 		GraveDefensor.Shared\GraveDefensor.Shared.projitems*{5e3ce998-93d5-448c-ae98-cdf1ea9c1a6e}*SharedItemsImports = 13
-		GraveDefensor.Shared\GraveDefensor.Shared.projitems*{93716d89-e6fd-4cb3-b16b-98269631bb77}*SharedItemsImports = 4
 		Tests\GraveDefensor.Shared.Test\GraveDefensor.Shared.Test.projitems*{963fb07b-e982-419e-ae8f-55e2b2a6c205}*SharedItemsImports = 13
 		GraveDefensor.Shared\GraveDefensor.Shared.projitems*{e6fbd856-8911-4e86-97e4-2839bdf5cbbf}*SharedItemsImports = 4
 	EndGlobalSection
@@ -54,14 +53,6 @@ Global
 		{8133E054-C2E9-40A7-8ECD-B13D0558A118}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8133E054-C2E9-40A7-8ECD-B13D0558A118}.Release|x86.ActiveCfg = Release|Any CPU
 		{8133E054-C2E9-40A7-8ECD-B13D0558A118}.Release|x86.Build.0 = Release|Any CPU
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Debug|Android.ActiveCfg = Debug|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Debug|x86.ActiveCfg = Debug|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Debug|x86.Build.0 = Debug|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Release|Android.ActiveCfg = Release|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Release|Any CPU.ActiveCfg = Release|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Release|x86.ActiveCfg = Release|x86
-		{93716D89-E6FD-4CB3-B16B-98269631BB77}.Release|x86.Build.0 = Release|x86
 		{8A98C043-9E5D-4B5F-B13F-E7FFCA7428A0}.Debug|Android.ActiveCfg = Debug|Any CPU
 		{8A98C043-9E5D-4B5F-B13F-E7FFCA7428A0}.Debug|Android.Build.0 = Debug|Any CPU
 		{8A98C043-9E5D-4B5F-B13F-E7FFCA7428A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -100,6 +91,18 @@ Global
 		{E6FBD856-8911-4E86-97E4-2839BDF5CBBF}.Release|x86.ActiveCfg = Release|Any CPU
 		{E6FBD856-8911-4E86-97E4-2839BDF5CBBF}.Release|x86.Build.0 = Release|Any CPU
 		{E6FBD856-8911-4E86-97E4-2839BDF5CBBF}.Release|x86.Deploy.0 = Release|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Debug|Android.Build.0 = Debug|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Debug|x86.Build.0 = Debug|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Release|Android.ActiveCfg = Release|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Release|Android.Build.0 = Release|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{71B2B92E-C705-49E4-B2E1-9B11894D17E7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
