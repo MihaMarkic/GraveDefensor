@@ -37,9 +37,9 @@ namespace GraveDefensor.Engine.Settings
         /// </summary>
         [XmlAttribute]
         public int RotationalSpeed { get; set; }
-        [XmlAttribute]
+        //[XmlAttribute]
         public int? CenterOffsetX { get; set; }
-        [XmlAttribute]
+        //[XmlAttribute]
         public int? CenterOffsetY { get; set; }
     }
 
