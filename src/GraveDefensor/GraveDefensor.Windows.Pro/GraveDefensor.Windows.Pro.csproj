@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">
-      <Version>4.6.3</Version>
+      <Version>4.6.7</Version>
     </PackageReference>
     <PackageReference Include="Righthand.Immutable">
       <Version>1.0.2</Version>
