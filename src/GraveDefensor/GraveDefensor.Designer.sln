@@ -20,6 +20,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{C97A671A-79CF-4CED-B554-9EE1C2D43AA1}"
 	ProjectSection(SolutionItems) = preProject
 		original.md = original.md
+		..\..\README.md = ..\..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraveDefensor.Designer", "GraveDefensor.Designer\GraveDefensor.Designer.csproj", "{38A8B299-CE21-49EE-83A9-F5F32DFF9432}"
