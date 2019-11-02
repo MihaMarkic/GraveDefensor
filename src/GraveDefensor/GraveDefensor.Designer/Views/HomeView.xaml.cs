@@ -1,17 +1,13 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace GraveDefensor.GameDesigner
+namespace GraveDefensor.Designer.Views
 {
-    public class MainWindow : Window
+    public class HomeView : UserControl
     {
-        public MainWindow()
+        public HomeView()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()

@@ -35,6 +35,8 @@ namespace GraveDefensor.Shared.Drawable.Scenes
         IInitContentContext initContentContext;
         public Dialog ActiveDialog => WeaponPickerDialog;
         public BattleSceneStatus Status { get; private set; }
+        // battle ready state
+        int batleReadyLoop;
         public void Init(IInitContext context, Settings.Battle settings, Settings.Enemies enemiesSettings, Settings.Weapon[] weaponsSettings, Settings.Size windowSize)
         {
             base.Init(new Point(windowSize.Width, windowSize.Height));
@@ -62,7 +64,12 @@ namespace GraveDefensor.Shared.Drawable.Scenes
             changeStatusSubscription = context.Dispatcher.Subscribe<ChangeStatusMessage>(OnChangeStatus);
             Status = BattleSceneStatus.Active;
         }
-        protected override bool CanScroll() => ActiveDialog is null;
+        /// <summary>
+        /// Scrolling is disabled for when showing a dialog or when status is ready which
+        /// displays the entire field.
+        /// </summary>
+        /// <returns></returns>
+        protected override bool CanScroll() => ActiveDialog is null && Status != BattleSceneStatus.Ready;
         internal void OnChangeStatus(object key, ChangeStatusMessage message)
         {
             Health += message.Health;
@@ -94,6 +101,8 @@ namespace GraveDefensor.Shared.Drawable.Scenes
         {
             switch (Status)
             {
+                case BattleSceneStatus.Ready:
+                    break;
                 case BattleSceneStatus.Active:
                     var childContext = OffsetUpdateContext(context);
                     var clickedWeaponPod = UpdateWeaponPods(childContext, WeaponPods, CurrentWave, CanEntityClick);

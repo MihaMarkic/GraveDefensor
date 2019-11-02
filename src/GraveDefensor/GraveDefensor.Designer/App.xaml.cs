@@ -1,7 +1,7 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Markup.Xaml;
 
-namespace GraveDefensor.GameDesigner
+namespace GraveDefensor.Designer
 {
     public class App : Application
     {
@@ -9,5 +9,5 @@ namespace GraveDefensor.GameDesigner
         {
             AvaloniaXamlLoader.Load(this);
         }
-    }
+   }
 }
