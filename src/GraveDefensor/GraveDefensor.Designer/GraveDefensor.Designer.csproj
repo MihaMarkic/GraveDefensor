@@ -39,4 +39,7 @@
     <ProjectReference Include="..\GraveDefensor.Engine.Designer\GraveDefensor.Engine.Designer.csproj" />
     <ProjectReference Include="..\GraveDefensor.Engine\GraveDefensor.Engine.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Abstract\" />
+  </ItemGroup>
 </Project>

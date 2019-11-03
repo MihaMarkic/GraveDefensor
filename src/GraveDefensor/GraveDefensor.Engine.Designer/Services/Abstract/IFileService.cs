@@ -9,5 +9,7 @@ namespace GraveDefensor.Engine.Designer.Services.Abstract
     {
         Task<Configuration> LoadConfigurationAsync(CancellationToken ct = default);
         Task SaveConfigurationAsync(Configuration config, CancellationToken ct = default);
+        Task<Settings.Master> LoadGameSettingsAsync(string path, CancellationToken ct = default);
+        Task SaveGameSettingsAsync(Settings.Master master, string path, CancellationToken ct = default);
     }
 }

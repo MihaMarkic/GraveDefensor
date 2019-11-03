@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace GraveDefensor.Engine.Designer.Services.Implementation
 {
@@ -62,6 +63,26 @@ namespace GraveDefensor.Engine.Designer.Services.Implementation
             {
                 Debug.WriteLine($"Failed to save configuration: {ex.Message}");
                 return Task.FromException(ex);
+            }
+        }
+
+        public Task<Settings.Master> LoadGameSettingsAsync(string path, CancellationToken ct = default)
+        {
+            var serializer = new XmlSerializer(typeof(Settings.Master));
+            using (var stream = File.OpenRead(path))
+            {
+                var master = (Settings.Master)serializer.Deserialize(stream);
+                return Task.FromResult(master);
+            }
+        }
+
+        public Task SaveGameSettingsAsync(Settings.Master master, string path, CancellationToken ct = default)
+        {
+            var serializer = new XmlSerializer(typeof(Settings.Master));
+            using (var stream = File.OpenWrite(path))
+            {
+                serializer.Serialize(stream, master);
+                return Task.CompletedTask;
             }
         }
     }
